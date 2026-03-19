@@ -1,0 +1,238 @@
+.topbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 16px;
+  background-color: #000;
+  height: var(--topbar-height);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  filter: none; /* Keep color if any, or adjust */
+}
+
+.topbar-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 500px;
+  justify-content: center;
+}
+
+.home-button {
+  width: 48px;
+  height: 48px;
+  background-color: #1f1f1f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.home-button:hover {
+  transform: scale(1.05);
+  background-color: #2a2a2a;
+}
+
+.search-box {
+  background-color: #1f1f1f;
+  height: 48px;
+  flex: 1;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.search-box:hover {
+  background-color: #2a2a2a;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.search-box:focus-within {
+  background-color: #2a2a2a;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.search-divider {
+  width: 1px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 0 4px;
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.search-input::placeholder {
+  color: #b3b3b3;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.install-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #000;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 0.1s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.install-button:hover {
+  transform: scale(1.05);
+  border-color: #fff;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b3b3b3;
+  transition: color 0.2s, transform 0.1s;
+}
+
+.icon-btn:hover {
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.profile-container {
+  width: 48px;
+  height: 48px;
+  background-color: #1f1f1f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-left: 8px;
+  padding: 8px;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.icon-white {
+  filter: brightness(0) invert(1);
+}
+
+.icon-subdued {
+  opacity: 0.7;
+  filter: brightness(0) invert(1);
+}
+
+.icon-invert {
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+.icon-invert:hover {
+  opacity: 1;
+}
+
+/* Suggestions Dropdown */
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -40px; /* Adjust based on search-box padding and icon */
+  right: -52px; /* Adjust to cover search-divider and browse icon */
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  box-shadow: 0 16px 24px rgba(0, 0, 0, 0.4), 0 6px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow: hidden;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #b3b3b3;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.1s;
+  font-size: 14px;
+}
+
+.suggestion-item:hover {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.suggestion-icon-circle {
+  width: 32px;
+  height: 32px;
+  background-color: #2a2a2a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.suggestion-icon-svg {
+  opacity: 1;
+  filter: brightness(0) invert(1);
+}
+
+.suggestion-text {
+  flex: 1;
+  font-weight: 500;
+  color: #b3b3b3;
+}
+
+.suggestion-item:hover .suggestion-text {
+  color: #fff;
+}
+
+.suggestion-arrow {
+  color: #b3b3b3;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suggestion-item:hover .suggestion-arrow {
+  opacity: 1;
+}
+
+.search-input-wrapper {
+  display: flex;
+  flex: 1;
+  position: relative;
+}

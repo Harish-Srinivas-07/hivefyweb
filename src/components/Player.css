@@ -1,0 +1,223 @@
+.player-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.now-playing {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 30%;
+}
+
+.now-playing-img {
+  border-radius: 4px;
+}
+
+.green-icon {
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(119deg) brightness(96%) contrast(101%);
+}
+
+.icon-invert {
+  filter: invert(1);
+  opacity: 0.7;
+}
+
+.icon-invert:hover {
+  opacity: 1;
+}
+
+.icon-subdued {
+  color: var(--color-text-subdued);
+  transition: color 0.2s ease;
+}
+
+.control-button:hover .icon-subdued,
+.util-button:hover .icon-subdued {
+  color: var(--color-text-base);
+}
+
+.flip-x {
+  transform: scaleX(-1);
+}
+
+.play-button img {
+  filter: none;
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-name {
+  font-size: 14px;
+  color: var(--color-text-base);
+  cursor: pointer;
+}
+
+.track-name:hover {
+  text-decoration: underline;
+}
+
+.artist-name {
+  font-size: 11px;
+  color: var(--color-text-subdued);
+  cursor: pointer;
+}
+
+.artist-name:hover {
+  color: var(--color-text-base);
+  text-decoration: underline;
+}
+
+.like-button {
+  font-size: 14px;
+  color: var(--color-primary);
+  margin-left: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.player-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 722px;
+}
+
+.control-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.control-button {
+  color: var(--color-text-subdued);
+  font-size: 18px;
+  transition: all 0.2s;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-button:hover {
+  color: var(--color-text-base);
+}
+
+.shuffle.active, .repeat.active {
+  color: var(--color-primary);
+}
+
+.play-button {
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-text-base);
+  color: #000;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: transform 0.1s;
+  cursor: pointer;
+}
+
+.play-button:hover {
+  transform: scale(1.05);
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.time {
+  font-size: 11px;
+  color: var(--color-text-subdued);
+  min-width: 30px;
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--color-text-base);
+  border-radius: 2px;
+  position: relative;
+}
+
+.progress-bar-bg:hover .progress-bar-fill {
+  background-color: var(--color-primary);
+}
+
+.volume-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+  width: 30%;
+}
+
+.util-button {
+  color: var(--color-text-subdued);
+  font-size: 16px;
+  transition: color 0.2s;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.util-button:hover {
+  color: var(--color-text-base);
+}
+
+.volume-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 125px;
+}
+
+.volume-bar-bg {
+  flex: 1;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.volume-bar-fill {
+  height: 100%;
+  background-color: var(--color-text-base);
+  border-radius: 2px;
+}
+
+.volume-bar-bg:hover .volume-bar-fill {
+  background-color: var(--color-primary);
+}
