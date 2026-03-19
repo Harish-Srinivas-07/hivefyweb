@@ -1,0 +1,43 @@
+import type { Config } from "tailwindcss";
+
+export default {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: "var(--color-primary)",
+          hover: "var(--color-primary-hover)",
+        },
+        bg: {
+          base: "var(--color-bg-base)",
+          elevated: "var(--color-bg-elevated)",
+          highlight: "var(--color-bg-highlight)",
+          press: "var(--color-bg-press)",
+        },
+        text: {
+          base: "var(--color-text-base)",
+          subdued: "var(--color-text-subdued)",
+          bright: "var(--color-text-bright)",
+        },
+        surface: {
+          base: "var(--surface-base)",
+          elevated: "var(--surface-elevated)",
+        },
+      },
+      spacing: {
+        sidebar: "var(--sidebar-width)",
+        player: "var(--player-height)",
+        topbar: "var(--topbar-height)",
+      },
+      fontFamily: {
+        spotify: ['SpotifyMix', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;

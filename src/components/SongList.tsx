@@ -4,7 +4,6 @@ import React from 'react';
 import Image from 'next/image';
 import { SongDetail } from '@/types';
 import { usePlayerStore } from '@/store/playerStore';
-import './SongList.css';
 
 interface SongListProps {
   songs: SongDetail[];
@@ -15,7 +14,6 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
   const { playSong, currentSong, isPlaying } = usePlayerStore();
 
   const handlePlay = (song: SongDetail, index: number) => {
-    // Dispatch to global Zustand store with the full array context
     playSong(song, songs);
     if (onSongClick) {
       onSongClick(song, index);
@@ -57,21 +55,26 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
   };
 
   if (!songs || songs.length === 0) {
-    return <div className="song-list-empty">No songs available</div>;
+    return (
+      <div className="flex flex-col items-center justify-center p-20 gap-4 opacity-40">
+        <Image src="/assets/icons/radio.png" alt="Empty" width={64} height={64} className="invert opacity-20" />
+        <span className="text-xl font-bold">No songs found in this collection</span>
+      </div>
+    );
   }
 
   return (
-    <div className="song-list">
-      <div className="song-list-header">
-        <div className="header-col-index">#</div>
-        <div className="header-col-title">Title</div>
-        <div className="header-col-album">Album</div>
-        <div className="header-col-duration">
-           <Image src="/assets/icons/timer.png" alt="Duration" width={16} height={16} className="icon-subdued icon-invert" />
+    <div className="flex flex-col w-full text-sm text-text-subdued font-spotify">
+      <div className="grid grid-cols-[16px_4fr_3fr_80px] md:grid-cols-[16px_4fr_3fr_120px] gap-4 px-4 py-2 border-b border-white/5 mb-2 items-center uppercase text-[11px] tracking-widest font-bold">
+        <div className="flex justify-center italic">#</div>
+        <div>Title</div>
+        <div className="hidden md:block">Album</div>
+        <div className="flex justify-end pr-2 md:pr-4">
+           <Image src="/assets/icons/timer.png" alt="Duration" width={16} height={16} className="transition-opacity invert opacity-70" />
         </div>
       </div>
       
-      <div className="song-list-body">
+      <div className="flex flex-col gap-[2px]">
         {songs.map((song, idx) => {
           const isCurrent = currentSong?.id === song.id;
           const imageObj = song.images && song.images.length > 0 ? song.images[0] : null;
@@ -79,37 +82,48 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
           return (
             <div 
               key={`${song.id}-${idx}`} 
-              className={`song-row ${isCurrent ? 'active-row' : ''}`}
+              className={`grid grid-cols-[16px_4fr_3fr_80px] md:grid-cols-[16px_4fr_3fr_120px] gap-2 md:gap-4 px-2 md:px-4 py-2 items-center rounded-lg cursor-pointer transition-all duration-300 group ${isCurrent ? 'bg-white/10 shadow-inner ring-1 ring-white/5' : 'hover:bg-white/5'}`}
               onClick={() => handlePlay(song, idx)}
             >
-              <div className="song-col-index">
+              <div className="flex items-center justify-center relative">
                 {isCurrent && isPlaying ? (
-                  <Image src="/assets/icons/player.gif" alt="Playing" width={14} height={14} className="playing-indicator" unoptimized />
+                  <Image 
+                    src="/assets/icons/player.gif" 
+                    alt="Playing" 
+                    width={14} 
+                    height={14} 
+                    className="invert sepia saturate-[25] hue-rotate-[90deg] brightness-125" 
+                    unoptimized 
+                  />
                 ) : (
-                  <span className="index-number">{idx + 1}</span>
+                  <>
+                    <span className={`text-text-subdued group-hover:hidden transition-all text-[13px] md:text-[14px] ${isCurrent ? 'text-primary font-bold' : ''}`}>{idx + 1}</span>
+                    <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="hidden text-white group-hover:block transition-all hover:scale-110"><path d="M7.05 3.606l13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path></svg>
+                  </>
                 )}
-                <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="play-icon-hover"><path d="M7.05 3.606l13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path></svg>
               </div>
               
-              <div className="song-col-title">
+              <div className="flex items-center gap-3 md:gap-4 overflow-hidden">
                 {imageObj && (
-                  <Image src={imageObj.url} alt={song.title} width={40} height={40} className="song-thumbnail" />
+                  <div className="flex-shrink-0 relative overflow-hidden rounded shadow-md group-hover:shadow-lg transition-all duration-300 w-10 h-10">
+                    <Image src={imageObj.url} alt={song.title} fill className="object-cover transition-transform group-hover:scale-110" />
+                  </div>
                 )}
-                <div className="song-title-meta">
-                  <div className={`song-name ${isCurrent ? 'text-green' : ''}`}>
+                <div className="flex flex-col gap-0.5 md:gap-1 min-w-0">
+                  <div className={`text-[14px] md:text-base font-bold truncate leading-tight ${isCurrent ? 'text-primary' : 'text-text-base'}`}>
                     {song.title || (song as any).name || 'Unknown Title'}
                   </div>
-                  <div className="song-artists">
+                  <div className="text-[12px] md:text-[13px] font-medium truncate group-hover:text-text-base transition-colors">
                     {getArtistsString(song)}
                   </div>
                 </div>
               </div>
               
-              <div className="song-col-album">
+              <div className="hidden md:block truncate text-text-subdued group-hover:text-text-base transition-colors text-[13px]">
                 {getAlbumString(song)}
               </div>
               
-              <div className="song-col-duration">
+              <div className="flex justify-end font-medium text-inherit group-hover:text-text-base pr-2 md:pr-4 text-[12px] md:text-[13px]">
                 {formatDuration(song.duration)}
               </div>
             </div>

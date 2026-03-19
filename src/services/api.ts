@@ -41,15 +41,25 @@ const mapMediaItem = (item: any) => {
     }
   }
 
+  // Handle downloadUrls normalization
+  if (item.downloadUrl && !item.downloadUrls) {
+    mapped.downloadUrls = item.downloadUrl;
+  }
+
+  // Handle images normalization
+  if (item.image && !item.images) {
+    mapped.images = item.image;
+  }
+
   // Recursive mapping for nested songs/albums
   if (Array.isArray(item.songs)) {
-    item.songs = item.songs.map(mapMediaItem);
+    mapped.songs = item.songs.map(mapMediaItem);
   }
   if (Array.isArray(item.topSongs)) {
-    item.topSongs = item.topSongs.map(mapMediaItem);
+    mapped.topSongs = item.topSongs.map(mapMediaItem);
   }
   if (Array.isArray(item.topAlbums)) {
-    item.topAlbums = item.topAlbums.map(mapMediaItem);
+    mapped.topAlbums = item.topAlbums.map(mapMediaItem);
   }
   
   return mapped;
@@ -178,7 +188,7 @@ export class SaavnAPI {
     return null;
   }
 
-  static async fetchPlaylistById(playlistId?: string, link?: string, page = 0, limit = 10, sortBy = "popularity", sortOrder = "desc"): Promise<Playlist | null> {
+  static async fetchPlaylistById(playlistId?: string, link?: string, page = 0, limit = 50, sortBy = "popularity", sortOrder = "desc"): Promise<Playlist | null> {
     if (!playlistId && !link) {
       console.warn("fetchPlaylist: Need at least one of playlistId or link");
       return null;
@@ -242,7 +252,7 @@ export class SaavnAPI {
     return null;
   }
 
-  static async fetchAlbumById(albumId?: string, link?: string, page = 0, limit = 10): Promise<Album | null> {
+  static async fetchAlbumById(albumId?: string, link?: string, page = 0, limit = 50): Promise<Album | null> {
     if (!albumId && !link) {
       console.warn("fetchAlbumById: Need either albumId or link");
       return null;

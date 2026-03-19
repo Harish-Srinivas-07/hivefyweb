@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { SongDetail } from '@/types';
+import { audioService } from '@/services/AudioService';
 
 export type RepeatMode = 'NONE' | 'ALL' | 'ONE';
 
@@ -13,6 +14,12 @@ interface PlayerState {
   isShuffling: boolean;
   repeatMode: RepeatMode;
   
+  // Progress/Audio State
+  currentTime: number;
+  duration: number;
+  volume: number;
+  seekTo: number | null; // For UI-triggered seeks
+
   // Weighted shuffle history
   recentlyPlayed: string[]; 
 
@@ -26,6 +33,12 @@ interface PlayerState {
   
   toggleShuffle: () => void;
   toggleRepeat: () => void;
+
+  setProgress: (time: number) => void;
+  setDuration: (duration: number) => void;
+  setVolume: (volume: number) => void;
+  seek: (time: number) => void; 
+  resetSeek: () => void;
   
   // Internal/Advanced helpers
   _applyShuffle: (current: SongDetail) => void;
@@ -43,6 +56,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   isPlaying: false,
   isShuffling: false,
   repeatMode: 'NONE',
+  
+  currentTime: 0,
+  duration: 0,
+  volume: 1.0,
+  seekTo: null,
   
   recentlyPlayed: [],
 
@@ -63,6 +81,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       isPlaying: true
     });
 
+    audioService.play(song);
+
     // If shuffling is already enabled, we must instantly apply shuffle to the new context
     if (get().isShuffling) {
       get()._applyShuffle(song);
@@ -72,10 +92,14 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   togglePlayPause: () => {
-    set(state => {
-      if (!state.currentSong) return state; // Can't play if nothing is selected
-      return { isPlaying: !state.isPlaying };
-    });
+    const { isPlaying, currentSong } = get();
+    if (!currentSong) return;
+    if (isPlaying) {
+      audioService.pause();
+    } else {
+      audioService.resume();
+    }
+    set({ isPlaying: !isPlaying });
   },
 
   setPlaying: (playing) => {
@@ -111,6 +135,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       isPlaying: true
     });
     
+    audioService.play(nextTrack);
     get()._registerPlay(nextTrack.id);
   },
 
@@ -136,6 +161,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
        isPlaying: true
      });
      
+     audioService.play(prevTrack);
      get()._registerPlay(prevTrack.id);
   },
 
@@ -149,6 +175,18 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       return { repeatMode: cycle[state.repeatMode] };
     });
   },
+
+  setProgress: (time) => set({ currentTime: time }),
+  setDuration: (duration) => set({ duration }),
+  setVolume: (volume) => {
+    set({ volume });
+    audioService.setVolume(volume);
+  },
+  seek: (time) => {
+    set({ seekTo: time });
+    audioService.seek(time);
+  },
+  resetSeek: () => set({ seekTo: null }),
 
   toggleShuffle: () => {
     const { isShuffling, originalQueue, currentSong } = get();

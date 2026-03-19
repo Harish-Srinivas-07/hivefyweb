@@ -1,7 +1,6 @@
 import React from 'react';
 import { SaavnAPI, decodeHtml } from '@/services/api';
 import SongList from '@/components/SongList';
-import './SearchPage.css';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -16,11 +15,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   if (!query) {
     return (
-      <div className="search-empty-state">
-        <div className="empty-content">
-          <Image src="/assets/icons/search.png" alt="Search" width={64} height={64} className="icon-invert opacity-50 mb-6" />
-          <h2>Play what you love</h2>
-          <p>Search for artists, songs, podcasts, and more.</p>
+      <div className="flex items-center justify-center h-full min-h-[60vh]">
+        <div className="text-center max-w-[400px]">
+          <Image src="/assets/icons/search.png" alt="Search" width={64} height={64} className="mx-auto mb-6 transition-opacity invert opacity-50" />
+          <h2 className="mb-2 text-2xl font-bold text-white">Play what you love</h2>
+          <p className="text-base text-[#a7a7a7]">Search for artists, songs, podcasts, and more.</p>
         </div>
       </div>
     );
@@ -34,28 +33,30 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const playlists = searchResults?.playlists?.results || [];
 
   return (
-    <div className="search-results-page">
-      <div className="search-header-area">
-        <h2 className="search-title">Total Results for &quot;{decodeHtml(query)}&quot;</h2>
+    <div className="flex flex-col gap-8 p-6">
+      <div className="mb-2">
+        <h2 className="text-2xl font-bold text-white">Total Results for &quot;{decodeHtml(query)}&quot;</h2>
       </div>
       
       {songs.length > 0 && (
-         <div className="search-section">
-            <h3 className="section-subtitle">Songs</h3>
+         <div>
+            <h3 className="mb-4 text-xl font-bold text-white">Songs</h3>
             <SongList songs={songs} />
          </div>
       )}
 
       {albums.length > 0 && (
-        <div className="search-section mt-8">
-           <h3 className="section-subtitle">Albums</h3>
-           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="mt-8">
+           <h3 className="mb-4 text-xl font-bold text-white">Albums</h3>
+           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
              {albums.map((album: any) => (
-               <Link key={album.id} href={`/album/${album.id}`} className="media-card-link">
-                 <div className="media-card">
-                   <Image src={album.images?.[album.images.length-1]?.url || '/assets/icons/disc.png'} alt={album.title} width={180} height={180} className="card-img" />
-                   <div className="card-title">{album.title || album.name}</div>
-                   <div className="card-subtitle">{album.year || album.artist || 'Album'}</div>
+               <Link key={album.id} href={`/album/${album.id}`}>
+                 <div className="h-full p-4 transition-colors rounded-lg cursor-pointer bg-[#181818] hover:bg-[#282828] group">
+                   <div className="relative w-full mb-4 overflow-hidden shadow-2xl aspect-square rounded">
+                    <Image src={album.images?.[album.images.length-1]?.url || '/assets/icons/disc.png'} alt={album.title} width={180} height={180} className="object-cover w-full h-full" />
+                   </div>
+                   <div className="mb-1 text-base font-bold text-white truncate">{album.title || album.name}</div>
+                   <div className="text-sm text-[#a7a7a7] truncate">{album.year || album.artist || 'Album'}</div>
                  </div>
                </Link>
              ))}
@@ -64,15 +65,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       )}
 
       {playlists.length > 0 && (
-        <div className="search-section mt-8">
-           <h3 className="section-subtitle">Playlists</h3>
-           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="mt-8">
+           <h3 className="mb-4 text-xl font-bold text-white">Playlists</h3>
+           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
              {playlists.map((playlist: any) => (
-               <Link key={playlist.id} href={`/playlist/${playlist.id}`} className="media-card-link">
-                 <div className="media-card">
-                   <Image src={playlist.images?.[playlist.images.length-1]?.url || '/assets/icons/playlist.png'} alt={playlist.title} width={180} height={180} className="card-img" />
-                   <div className="card-title">{playlist.title || playlist.name}</div>
-                   <div className="card-subtitle">{playlist.artist || 'Playlist'}</div>
+               <Link key={playlist.id} href={`/playlist/${playlist.id}`}>
+                 <div className="h-full p-4 transition-colors rounded-lg cursor-pointer bg-[#181818] hover:bg-[#282828] group">
+                   <div className="relative w-full mb-4 overflow-hidden shadow-2xl aspect-square rounded">
+                    <Image src={playlist.images?.[playlist.images.length-1]?.url || '/assets/icons/playlist.png'} alt={playlist.title} width={180} height={180} className="object-cover w-full h-full" />
+                   </div>
+                   <div className="mb-1 text-base font-bold text-white truncate">{playlist.title || playlist.name}</div>
+                   <div className="text-sm text-[#a7a7a7] truncate">{playlist.artist || 'Playlist'}</div>
                  </div>
                </Link>
              ))}
@@ -81,9 +84,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       )}
 
       {songs.length === 0 && albums.length === 0 && playlists.length === 0 && (
-        <div className="no-results">
-           <p>No results found for &quot;{query}&quot;</p>
-           <p className="no-results-sub">Please make sure your words are spelled correctly or use less or different keywords.</p>
+        <div className="py-16 text-center text-white">
+           <p className="mb-3 text-xl font-bold">No results found for &quot;{query}&quot;</p>
+           <p className="text-base font-normal text-[#a7a7a7]">Please make sure your words are spelled correctly or use less or different keywords.</p>
         </div>
       )}
     </div>

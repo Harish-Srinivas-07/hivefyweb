@@ -1,26 +1,33 @@
-@font-face {
-  font-family: 'SpotifyMix';
-  src: url('/assets/fonts/SpotifyMix-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
+@import "tailwindcss";
 
-@font-face {
-  font-family: 'SpotifyMix';
-  src: url('/assets/fonts/SpotifyMix-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-}
+@theme {
+  --font-spotify: 'SpotifyMix', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  
+  --color-primary: #1ed760;
+  --color-primary-hover: #1fdf64;
+  
+  --color-bg-base: #000000;
+  --color-bg-elevated: #121212;
+  --color-bg-highlight: #1a1a1a;
+  --color-bg-press: #000000;
+  
+  --color-text-base: #ffffff;
+  --color-text-subdued: #b3b3b3;
+  --color-text-bright: #ffffff;
+  
+  --color-surface-base: #121212;
+  --color-surface-elevated: #242424;
+  --color-surface-elevated-hover: #2a2a2a;
 
-@font-face {
-  font-family: 'SpotifyMix';
-  src: url('/assets/fonts/SpotifyMix-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
+  --spacing-sidebar: 280px;
+  --spacing-player: 90px;
+  --spacing-topbar: 64px;
+
+  --animate-press: scale(0.98);
 }
 
 :root {
-  /* Colors */
+  /* Colors for legacy CSS variables usage */
   --color-primary: #1ed760;
   --color-primary-hover: #1fdf64;
   --color-bg-base: #000000;
@@ -33,7 +40,8 @@
 
   /* Surfaces */
   --surface-base: #121212;
-  --surface-elevated: #212121;
+  --surface-elevated: #242424;
+  --surface-elevated-hover: #2a2a2a;
 
   /* Layout */
   --sidebar-width: 280px;
@@ -41,105 +49,78 @@
   --topbar-height: 64px;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+@layer base {
+  body {
+    @apply bg-bg-base text-text-base font-spotify overflow-hidden h-screen select-none;
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+
+  button {
+    @apply cursor-pointer border-none bg-none font-[inherit] outline-none transition-transform active:scale-[0.97];
+  }
+
+  @font-face {
+    font-family: 'SpotifyMix';
+    src: url('/assets/fonts/SpotifyMix-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'SpotifyMix';
+    src: url('/assets/fonts/SpotifyMix-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'SpotifyMix';
+    src: url('/assets/fonts/SpotifyMix-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+  }
 }
 
-body {
-  background-color: var(--color-bg-base);
-  color: var(--color-text-base);
-  font-family: 'SpotifyMix', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  overflow: hidden;
-  height: 100vh;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-}
-.layout-container {
-  display: grid;
-  grid-template-areas:
-    "sidebar main"
-    "player player";
-  grid-template-columns: var(--sidebar-width) 1fr;
-  grid-template-rows: 1fr var(--player-height);
-  height: 100vh;
-  gap: 8px;
-  padding: 8px;
-  background-color: var(--color-bg-base);
-}
-
-.sidebar {
-  grid-area: sidebar;
-  background-color: var(--color-bg-base);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  overflow: hidden;
-}
-
-.main-view {
-  grid-area: main;
-  background-color: var(--surface-base);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-}
-
-.topbar {
-  height: var(--topbar-height);
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  padding: 0 32px;
-}
-
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 32px 32px;
-}
-
-.player-bar {
-  grid-area: player;
-  background-color: var(--color-bg-base);
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-}
-
-.nav-placeholder, .topbar-placeholder, .player-placeholder {
-  color: var(--color-text-subdued);
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
+/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  @apply bg-white/10 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  @apply bg-white/20;
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.glass {
+  @apply backdrop-blur-md bg-black/50 border border-white/5;
+}
+
+.card-shadow {
+  @apply shadow-[0_8px_24px_rgba(0,0,0,0.5)];
+}
+
+.text-glow {
+  @apply drop-shadow-[0_0_8px_rgba(255,255,255,0.3)];
+}
+
+.play-button-gradient {
+  @apply bg-gradient-to-br from-[#450af5] to-[#c4efd9];
 }

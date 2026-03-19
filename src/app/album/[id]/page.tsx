@@ -6,8 +6,14 @@ export default async function AlbumPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   console.log(`[AlbumPage] Fetching album details for ID: ${id}`);
   
-  // Fetch album data
-  const album = await SaavnAPI.fetchAlbumById(id);
+  // Initial fetch to get metadata
+  let album = await SaavnAPI.fetchAlbumById(id);
+  
+  // If count is available and more songs exist, re-fetch
+  const detectedCount = (album as any)?.songCount || album?.songIds?.length || 0;
+  if (album && detectedCount > (album.songs?.length || 0)) {
+    album = await SaavnAPI.fetchAlbumById(id, undefined, 0, Number(detectedCount));
+  }
   
   if (!album) {
     console.warn(`[AlbumPage] Album with ID ${id} NOT FOUND`);

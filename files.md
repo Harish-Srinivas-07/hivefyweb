@@ -43,6 +43,7 @@
 │           ├── equalizer.png
 │           ├── github.png
 │           ├── heart.png
+│           ├── home.png
 │           ├── info.png
 │           ├── insta.png
 │           ├── last_album.png
@@ -69,35 +70,33 @@
 │   ├── app
 │   │   ├── album
 │   │   │   └── [id]
+│   │   │       ├── loading.tsx
 │   │   │       └── page.tsx
 │   │   ├── api
 │   │   │   └── suggestions
 │   │   │       └── route.ts
 │   │   ├── playlist
 │   │   │   └── [id]
+│   │   │       ├── loading.tsx
 │   │   │       └── page.tsx
 │   │   ├── search
-│   │   │   ├── SearchPage.css
+│   │   │   ├── loading.tsx
 │   │   │   └── page.tsx
 │   │   ├── favicon.ico
 │   │   ├── globals.css
 │   │   ├── layout.tsx
-│   │   ├── page.module.css
-│   │   └── page.tsx
+│   │   ├── loading.tsx
+│   │   ├── page.tsx
+│   │   ├── robots.ts
+│   │   └── sitemap.ts
 │   ├── components
 │   │   ├── AudioController.tsx
 │   │   ├── LayoutWrapper.tsx
-│   │   ├── MainContent.css
 │   │   ├── MainContent.tsx
-│   │   ├── MediaDetailView.css
 │   │   ├── MediaDetailView.tsx
-│   │   ├── Player.css
 │   │   ├── Player.tsx
-│   │   ├── Sidebar.css
 │   │   ├── Sidebar.tsx
-│   │   ├── SongList.css
 │   │   ├── SongList.tsx
-│   │   ├── TopBar.css
 │   │   └── TopBar.tsx
 │   ├── services
 │   │   ├── api.ts
@@ -109,7 +108,6 @@
 │       └── index.ts
 ├── .gitignore
 ├── README.md
-├── album_res.json
 ├── api.yaml
 ├── apidoc.json
 ├── designystem.md
@@ -118,6 +116,8 @@
 ├── next.config.ts
 ├── package-lock.json
 ├── package.json
+├── postcss.config.mjs
 ├── prd.md
+├── tailwind.config.ts.bak
 └── tsconfig.json
 ```
