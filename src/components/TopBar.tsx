@@ -106,25 +106,36 @@ const SearchInput = () => {
 
 const TopBar = () => {
   return (
-    <div className="flex items-center justify-between w-full px-2 md:px-4 bg-transparent h-topbar font-spotify">
-      <div className="flex items-center transition-transform hover:scale-105 active:scale-95">
-        <span className="md:hidden ml-2 font-black text-lg tracking-tight">Hivefy</span>
+    <div className="flex items-center justify-between w-full gap-4 px-2 md:px-4 bg-transparent h-topbar font-spotify">
+      {/* Brand Logo & Mobile Brand */}
+      <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-105 active:scale-95 group">
+          <Image 
+            src="/assets/icons/logo.png" 
+            alt="Hivefy" 
+            width={32} 
+            height={32} 
+            className="drop-shadow-[0_0_8px_rgba(30,215,96,0.3)]" 
+          />
+          <span className="hidden lg:block text-xl font-black tracking-tight text-white transition-colors group-hover:text-primary">Hivefy</span>
+        </Link>
       </div>
 
-      <div className="hidden md:flex items-center justify-center flex-1 gap-2 max-w-[500px]">
-        <Link href="/" className="transition-all duration-200 hover:scale-110 active:scale-95">
-          <div className="flex items-center justify-center w-12 h-12 transition-all rounded-full bg-surface-elevated hover:bg-surface-elevated-hover">
+      {/* Center Nav: Home + Search */}
+      <div className="hidden md:flex items-center justify-center flex-1 gap-2 max-w-[600px]">
+        <Link href="/" className="transition-all duration-200 hover:scale-110 active:scale-95 group/home">
+          <div className="flex items-center justify-center w-12 h-12 transition-all rounded-full bg-surface-elevated group-hover/home:bg-primary group-hover/home:shadow-[0_0_15px_rgba(30,215,96,0.4)]">
             <Image 
               src="/assets/icons/home.png" 
               alt="Home" 
               width={24} 
               height={24} 
-              className="transition-all invert opacity-70 hover:opacity-100" 
+              className="transition-all invert opacity-90 group-hover/home:invert-0 group-hover/home:brightness-0" 
             />
           </div>
         </Link>
-        <div className="bg-surface-elevated h-11 flex-1 rounded-full flex items-center px-3 gap-3 transition-all duration-300 hover:bg-surface-elevated-hover hover:ring-1 hover:ring-white/10 focus-within:bg-[#2a2a2a] focus-within:ring-2 focus-within:ring-white">
-          <Image src="/assets/icons/search.png" alt="Search" width={20} height={20} className="transition-opacity invert opacity-60" />
+        <div className="bg-[#1f1f1f] h-12 flex-1 rounded-full flex items-center px-4 gap-3 transition-all duration-300 hover:bg-[#2a2a2a] hover:ring-1 hover:ring-primary/40 focus-within:bg-[#2a2a2a] focus-within:ring-2 focus-within:ring-primary group relative shadow-inner">
+          <Image src="/assets/icons/search.png" alt="Search" width={20} height={20} className="transition-opacity invert opacity-60 group-focus-within:opacity-100" />
           <Suspense fallback={<div className="flex-1 h-5 animate-pulse bg-white/5 rounded" />}>
             <SearchInput />
           </Suspense>
@@ -135,6 +146,7 @@ const TopBar = () => {
         </div>
       </div>
 
+      {/* Right Actions */}
       <div className="flex items-center gap-2 md:gap-4">
         <a 
           href="https://github.com/Harish-Srinivas-07/hivefy/releases" 
@@ -146,13 +158,10 @@ const TopBar = () => {
           <span>Install App</span>
         </a>
         <button className="hidden sm:flex items-center justify-center transition-all rounded-full w-10 h-10 group text-text-subdued hover:text-text-base hover:bg-white/10 active:scale-90">
-          <Image src="/assets/icons/bell.png" alt="Notifications" width={20} height={20} className="transition-all invert opacity-60 group-hover:opacity-100 group-hover:rotate-[15deg]" />
+          <Image src="/assets/icons/bell.png" alt="Notifications" width={20} height={20} className="transition-all invert opacity-70 group-hover:opacity-100 group-hover:rotate-[15deg]" />
         </button>
-        <button className="hidden sm:flex items-center justify-center transition-all rounded-full w-10 h-10 group text-text-subdued hover:text-text-base hover:bg-white/10 active:scale-90">
-          <Image src="/assets/icons/artist.png" alt="Social" width={20} height={20} className="transition-all invert opacity-60 group-hover:opacity-100" />
-        </button>
-        <div className="flex items-center justify-center p-1 cursor-pointer transition-all rounded-full w-9 h-9 md:w-10 md:h-10 hover:bg-white/10 hover:scale-105 active:scale-95 ring-1 ring-white/10 shadow-lg">
-          <Image src="/assets/icons/logo.png" alt="Profile" width={28} height={28} className="object-contain" />
+        <div className="flex items-center justify-center p-0.5 cursor-pointer transition-all rounded-full w-9 h-9 md:w-10 md:h-10 border-2 border-surface-elevated hover:border-text-subdued overflow-hidden active:scale-95 shadow-lg">
+          <Image src="/assets/icons/logo.png" alt="Profile" width={40} height={40} className="object-cover" />
         </div>
       </div>
     </div>

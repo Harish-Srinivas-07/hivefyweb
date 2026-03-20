@@ -5,9 +5,6 @@ export async function GET(request: Request) {
   const query = searchParams.get('q');
   
   if (!query) return NextResponse.json([]);
-
-  console.log(`[Suggestions Proxy] Querying for: "${query}"`);
-
   const url = `https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=${encodeURIComponent(query)}`;
   
   try {
@@ -23,12 +20,9 @@ export async function GET(request: Request) {
        return NextResponse.json([]);
     }
     
-    const text = await res.text();
-    console.log(`[Proxy] Raw response: ${text.substring(0, 100)}...`);
-    
+    const text = await res.text();    
     const json = JSON.parse(text);
     if (Array.isArray(json) && Array.isArray(json[1])) {
-       console.log(`[Proxy] Found ${json[1].length} suggestions`);
        return NextResponse.json(json[1]);
     }
     return NextResponse.json([]);

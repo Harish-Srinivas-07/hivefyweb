@@ -3,6 +3,7 @@
 import React from 'react';
 import { usePlayerStore } from '@/store/playerStore';
 import Sidebar from "@/components/Sidebar";
+import QueuePanel from "@/components/QueuePanel";
 import Player from "@/components/Player";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
@@ -13,34 +14,39 @@ export default function LayoutWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  const { currentSong } = usePlayerStore();
+  const { currentSong, showQueue } = usePlayerStore();
 
   return (
     <div className="flex flex-col h-screen bg-bg-base font-spotify">
       {/* Desktop Grid Layout */}
       <div 
-        className="hidden md:grid h-full gap-2 p-2 overflow-hidden"
+        className="hidden md:grid h-full w-full gap-2 p-2 overflow-hidden bg-black"
         style={{
-          gridTemplateAreas: '"sidebar main" "player player"',
+          gridTemplateAreas: '"topbar topbar" "sidebar main" "player player"',
           gridTemplateColumns: 'var(--sidebar-width) 1fr',
-          gridTemplateRows: currentSong ? '1fr var(--player-height)' : '1fr 0px',
-          gap: currentSong ? '8px' : '0px'
+          gridTemplateRows: currentSong ? 'var(--topbar-height) 1fr var(--player-height)' : 'var(--topbar-height) 1fr 0px',
+          gap: '8px'
         }}
       >
+        <header 
+          className="flex items-center backdrop-blur-md bg-black px-4 h-topbar z-[1001]"
+          style={{ gridArea: 'topbar' }}
+        >
+          <TopBar />
+        </header>
+
         <aside 
           className="flex flex-col gap-2 overflow-hidden bg-bg-base"
           style={{ gridArea: 'sidebar' }}
         >
-          <Sidebar />
+          {showQueue ? <QueuePanel /> : <Sidebar />}
         </aside>
+
         <main 
           className="relative flex flex-col overflow-hidden rounded-lg bg-surface-base"
           style={{ gridArea: 'main' }}
         >
-          <header className="sticky top-0 z-10 flex items-center px-8 backdrop-blur-md bg-black/50 h-topbar border-b border-white/5">
-            <TopBar />
-          </header>
-          <div className="flex-1 px-8 pb-32 overflow-y-auto overflow-x-hidden">
+          <div className="flex-1 px-8 pb-32 overflow-y-auto overflow-x-hidden scrollbar-hide">
             {children}
           </div>
         </main>

@@ -3,83 +3,84 @@ export interface SourceUrl {
   url: string;
 }
 
-export interface SongMediaItem {
+export interface MediaItem {
   id: string;
   name: string;
-  title: string;
   type: string;
   url: string;
-  images: SourceUrl[];
+  image: SourceUrl[];
+  label?: string;
   description?: string;
   language?: string;
-}
-
-export interface Artist extends SongMediaItem {
-  position?: number;
-}
-
-export interface Artists {
-  primary?: Artist[];
-  featured?: Artist[];
-  all?: Artist[];
-}
-
-export interface Contributors extends Artists {}
-
-export interface Song extends SongMediaItem {
-  album?: string;
-  primaryArtists?: string;
-  singers?: string;
-}
-
-export interface SongDetail extends Song {
-  year?: string;
-  releaseDate?: string;
-  duration?: string;
-  label?: string;
-  albumName?: string;
+  year?: string | number | null;
   explicitContent?: boolean;
+  playCount?: number | string | null;
+}
+
+export interface ArtistMini {
+  id: string;
+  name: string;
+  role: string;
+  type: string;
+  image: SourceUrl[];
+  url: string;
+}
+
+export interface ArtistsGroup {
+  primary: ArtistMini[];
+  featured: ArtistMini[];
+  all: ArtistMini[];
+}
+
+export interface SongDetail extends MediaItem {
+  album: {
+    id: string | null;
+    name: string | null;
+    url: string | null;
+  };
+  artists: ArtistsGroup;
+  duration: number | null;
+  releaseDate: string | null;
+  hasLyrics: boolean;
+  lyricsId: string | null;
+  copyright: string | null;
+  downloadUrl: SourceUrl[];
+  // legacy/UI compatibility fields
+  title?: string;
+  images?: SourceUrl[];
   downloadUrls?: SourceUrl[];
-  contributors?: Contributors;
-}
-
-export interface Playlist extends SongMediaItem {
-  songCount?: number;
-  explicitContent?: boolean;
-  songs?: SongDetail[];
-  artists?: Artists;
-}
-
-export interface Album extends SongMediaItem {
   artist?: string;
-  year?: string;
-  songIds?: string[];
+  albumName?: string;
+}
+
+export interface Album extends MediaItem {
+  artists: ArtistsGroup;
+  songCount?: number;
+  songIds?: string[] | string;
   songs?: SongDetail[];
-  label?: string;
-  explicitContent?: boolean;
-  artists?: Artists;
-  downloadUrls?: SourceUrl[];
+  // legacy/UI compatibility
+  title?: string;
+  images?: SourceUrl[];
 }
 
-export interface SearchResult<T> {
-  total: number;
-  results: T[];
+export interface Playlist extends MediaItem {
+  songCount: number | null;
+  songs?: SongDetail[];
+  artists?: ArtistMini[];
+  songIds?: string[] | string;
+  // legacy/UI compatibility
+  title?: string;
+  images?: SourceUrl[];
 }
 
-export interface GlobalSearch {
-  songs: SearchResult<Song>;
-  albums: SearchResult<Album>;
-  artists: SearchResult<Artist>;
-  playlists: SearchResult<Playlist>;
-}
-
-export interface ArtistDetails extends Artist {
+export interface ArtistDetails extends MediaItem {
+  role?: string;
   followerCount?: number;
   fanCount?: number;
   isVerified?: boolean;
   dominantLanguage?: string;
   dominantType?: string;
-  bio?: string[];
+  bio?: { text: string; title: string }[];
   dob?: string;
   fb?: string;
   twitter?: string;
@@ -89,22 +90,32 @@ export interface ArtistDetails extends Artist {
   topSongs?: SongDetail[];
   topAlbums?: Album[];
   singles?: Album[];
-  similarArtists?: Artist[];
+  similarArtists?: ArtistMini[];
+  // legacy/UI compatibility
+  title?: string;
+  images?: SourceUrl[];
 }
 
-export interface SearchPlaylistsResponse {
+export interface SearchResult<T> {
   total: number;
   start: number;
-  results: Playlist[];
+  results: T[];
 }
 
-export interface SearchArtistsResponse {
-  total: number;
-  start: number;
-  results: Artist[];
+export interface GlobalSearch {
+  songs: SearchResult<any>;
+  albums: SearchResult<any>;
+  artists: SearchResult<any>;
+  playlists: SearchResult<any>;
+  topQuery: SearchResult<any>;
 }
 
 export interface LastQueueData {
   songs: SongDetail[];
   currentIndex: number;
 }
+
+// For backward compatibility
+export type SearchPlaylistsResponse = SearchResult<Playlist>;
+export type SearchArtistsResponse = SearchResult<ArtistMini>;
+export type Artist = ArtistMini;

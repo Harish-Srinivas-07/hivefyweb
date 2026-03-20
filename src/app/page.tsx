@@ -16,13 +16,13 @@ async function HomeContent() {
     LatestSaavnFetcher.getLatestAlbums("tamil", 30, 50),
     SaavnAPI.searchPlaylists("love tamil", 0, 20),
     SaavnAPI.searchPlaylists("party tamil", 0, 20),
-    SaavnAPI.globalSearch("top artists tamil"), // Simplified artist proxy
+    SaavnAPI.searchArtists("top artists tamil", 0, 20),
   ]);
 
   const lovePlaylists = loveRes?.results || [];
   const partyPlaylists = partyRes?.results || [];
-  const artists = artistSearchRes?.artists?.results || [];
-
+  const artists = (artistSearchRes as any)?.results || [];
+ 
   const midPlaylist = Math.floor(latestPlaylists.length / 2);
   const topLatest = latestPlaylists.slice(0, midPlaylist).sort(() => 0.5 - Math.random());
   const fresh = latestPlaylists.slice(midPlaylist).sort(() => 0.5 - Math.random());

@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "howler": "^2.2.4",
     "localforage": "^1.10.0",
     "next": "16.1.6",

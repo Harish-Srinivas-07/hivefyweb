@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { SongDetail, Playlist, Album } from '@/types';
 import { usePlayerStore } from '@/store/playerStore';
 import { decodeHtml } from '@/services/api';
+import { historyService } from '@/services/history';
 
 interface MediaDetailViewProps {
   data: Playlist | Album;
@@ -13,6 +14,12 @@ interface MediaDetailViewProps {
 
 export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
   const { playSong, currentSong, isPlaying } = usePlayerStore();
+
+  React.useEffect(() => {
+    if (data && data.id) {
+       historyService.addVisited(data, (type as any));
+    }
+  }, [data, type]);
 
   const safeString = (val: any): string => {
     if (!val) return '';
@@ -45,7 +52,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
     return '/assets/icons/logo.png';
   };
 
-  const formatDuration = (secondsStr?: string | number) => {
+  const formatDuration = (secondsStr?: string | number | null) => {
     if (!secondsStr) return "0:00";
     const totalSeconds = typeof secondsStr === 'string' ? parseInt(secondsStr, 10) : secondsStr;
     const m = Math.floor(totalSeconds / 60);
@@ -66,7 +73,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
     return typeof artistVal === 'string' ? artistVal : 'Various Artists';
   };
 
-  const totalDuration = data.songs?.reduce((acc, song) => acc + (parseInt(song.duration || '0', 10)), 0) || 0;
+  const totalDuration = data.songs?.reduce((acc, song) => acc + (Number(song.duration || 0)), 0) || 0;
   const hours = Math.floor(totalDuration / 3600);
   const minutes = Math.floor((totalDuration % 3600) / 60);
 
@@ -99,9 +106,9 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 text-[12px] md:text-sm font-bold mt-2">
               <span className="hover:underline cursor-pointer">{getArtistsString(data)}</span>
               <span className="text-text-subdued">•</span>
-              <span className="text-text-base">{(data as any).year || ''}</span>
+              <span className="text-text-base">{data.year || ''}</span>
               <span className="text-text-subdued">•</span>
-              <span className="text-text-base">{(data as any).songCount || data.songs?.length || 0} songs,</span>
+              <span className="text-text-base">{data.songCount || data.songs?.length || 0} songs,</span>
               <span className="text-text-subdued font-normal hidden sm:inline">
                 {hours > 0 ? `${hours} hr ` : ''}{minutes} min
               </span>
@@ -168,7 +175,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
                     <div className="text-[12px] md:text-[13px] font-medium text-text-subdued truncate group-hover:text-text-base transition-colors">{getArtistsString(song)}</div>
                   </div>
                 </div>
-                <div className="hidden md:block text-[13px] text-text-subdued truncate group-hover:text-text-base transition-colors font-medium">{safeString(song.albumName || song.album || data.name || data.title)}</div>
+                <div className="hidden md:block text-[13px] text-text-subdued truncate group-hover:text-text-base transition-colors font-medium">{safeString(song.albumName || song.album?.name || song.album || data.name || data.title)}</div>
                 <div className="text-[12px] md:text-[13px] text-text-subdued flex justify-end group-hover:text-text-base transition-colors font-medium pr-2 md:pr-4">{formatDuration(song.duration)}</div>
               </div>
             );

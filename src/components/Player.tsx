@@ -20,7 +20,9 @@ const Player = () => {
     duration,
     volume,
     seek,
-    setVolume
+    setVolume,
+    showQueue,
+    setShowQueue
   } = usePlayerStore();
 
   const [isHoveringProgress, setIsHoveringProgress] = useState(false);
@@ -146,20 +148,27 @@ const Player = () => {
         <div className="flex items-center w-full gap-2 group/progress">
           <span className="text-[11px] text-text-subdued min-w-[32px] text-right">{formatTime(currentTime)}</span>
           <div 
-            className="relative flex-1 h-3 flex items-center group/slider"
+            className="relative flex-1 h-1 flex items-center group/slider overflow-visible"
             onMouseEnter={() => setIsHoveringProgress(true)}
             onMouseLeave={() => setIsHoveringProgress(false)}
           >
+            <div className="absolute w-full h-1 bg-white/10 rounded-full" />
+            <div 
+              className="absolute h-1 bg-white group-hover/slider:bg-primary rounded-full z-[11] transition-colors"
+              style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
+            />
+            {/* Round Dot Thumb */}
+            <div 
+              className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-xl z-[12] pointer-events-none transition-opacity ${isHoveringProgress ? 'opacity-100' : 'opacity-0'}`}
+              style={{ left: `calc(${(currentTime / (duration || 1)) * 100}% - 6px)` }}
+            />
             <input 
               type="range"
               min="0"
               max={duration || 100}
               value={currentTime}
               onChange={(e) => seek(parseFloat(e.target.value))}
-              className="absolute w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-transparent z-10"
-              style={{
-                background: `linear-gradient(to right, ${isHoveringProgress ? '#1ed760' : '#ffffff'} 0%, ${isHoveringProgress ? '#1ed760' : '#ffffff'} ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.1) ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.1) 100%)`
-              }}
+              className="absolute w-full h-5 opacity-0 cursor-pointer z-20"
             />
           </div>
           <span className="text-[11px] text-text-subdued min-w-[32px]">{formatTime(duration)}</span>
@@ -167,12 +176,22 @@ const Player = () => {
       </div>
 
       {/* Extra Controls & Volume (Desktop Only) */}
-      <div className="hidden md:flex items-center justify-end w-[30%] min-w-[180px] gap-2 lg:gap-3">
-        <PlayerExtraBtn icon={<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 1h-1v2H5V1H4v2H1v12h14V3h-3V1zM2 14V4h12v10H2zm3-4H4V9h1v1zm3 0H7V9h1v1zm3 0H10V9h1v1zM5 12H4v-1h1v1zm3 0H7v-1h1v1zm3 0H10v-1h1v1z"></path></svg>} />
-        <PlayerExtraBtn icon={<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M15 15H1v-1.5h14V15zm0-4.5H1V9h14v1.5zm-14-3h14v-1.5H1v1.5zm14-4.5H1V1.5h14V3z"></path></svg>} />
-        <PlayerExtraBtn icon={<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2.75C6 1.784 6.784 1 7.75 1s1.75.784 1.75 1.75v10.5c0 .966-.784 1.75-1.75 1.75S6 13.216 6 12.25V2.75zm.75 0v9.5a1 1 0 1 0 2 0v-9.5a1 1 0 1 0-2 0zM4.451 5.146l4.243 4.242a.75.75 0 0 1-1.06 1.061L3.39 6.207a.75.75 0 0 1 1.06-1.061z"></path></svg>} />
+      <div className="hidden md:flex items-center justify-end w-[30%] min-w-[180px] gap-2 lg:gap-4">
         
-        <div className="flex items-center gap-2 w-[90px] lg:w-[125px] group/volume">
+        {/* Queue Button */}
+        <button 
+          onClick={() => setShowQueue(!showQueue)}
+          className={`relative flex items-center justify-center transition-all p-1.5 rounded-full hover:bg-white/10 active:scale-90 ${showQueue ? 'text-primary' : 'text-text-subdued hover:text-white'}`}
+          title="Queue"
+        >
+          <svg role="img" height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M15 15H1v-1.5h14V15zm0-4.5H1V9h14v1.5zm-14-3h14v-1.5H1v1.5zm14-4.5H1V1.5h14V3z" />
+          </svg>
+          {showQueue && <div className="absolute top-[3px] right-[3px] w-2 h-2 rounded-full bg-primary border-2 border-black" />}
+        </button>
+
+        {/* Volume Control */}
+        <div className="flex items-center gap-2 w-[110px] lg:w-[140px] group/volume mr-2">
           <button className="text-text-subdued hover:text-white transition-colors" onClick={() => setVolume(volume > 0 ? 0 : 0.5)}>
             {volume === 0 ? (
                 <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13.86 5.47a.75.75 0 0 0-1.06 1.06l1.47 1.47-1.47 1.47a.75.75 0 0 0 1.06 1.06l1.47-1.47 1.47 1.47a.75.75 0 0 0 1.06-1.06L15.39 8l1.47-1.47a.75.75 0 0 0-1.06-1.06L14.33 6.94l-1.47-1.47zM9.741.85a.75.75 0 0 1 .375.65v13a.75.75 0 0 1-1.125.65l-6.925-4a3.642 3.642 0 0 1-1.33-4.967 3.639 3.639 0 0 1 1.33-1.332l6.925-4a.75.75 0 0 1 .75 0zm-6.924 5.3a2.139 2.139 0 0 0 0 3.7l5.8 3.35V2.8l-5.8 3.35z"></path></svg>
@@ -180,10 +199,15 @@ const Player = () => {
                 <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M9.741.85a.75.75 0 0 1 .375.65v13a.75.75 0 0 1-1.125.65l-6.925-4a3.642 3.642 0 0 1-1.33-4.967 3.639 3.639 0 0 1 1.33-1.332l6.925-4a.75.75 0 0 1 .75 0zm-6.924 5.3a2.139 2.139 0 0 0 0 3.7l5.8 3.35V2.8l-5.8 3.35zm8.683 4.29V5.56a2.75 2.75 0 0 1 0 4.88z"></path></svg>
             )}
           </button>
-          <div className="relative flex-1 h-1 bg-white/10 rounded-full group/volscroll overflow-hidden">
+          <div className="relative flex-1 h-1 bg-white/10 rounded-full group/volscroll overflow-visible transition-all group-hover/volume:h-1.5 focus-within:h-1.5">
              <div 
-               className="absolute top-0 left-0 h-full bg-white group-hover/volscroll:bg-primary transition-colors" 
+               className="absolute top-0 left-0 h-full bg-white group-hover/volscroll:bg-primary rounded-full transition-colors z-10" 
                style={{ width: `${volume * 100}%` }}
+             />
+             {/* Round Dot Thumb */}
+             <div 
+               className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-xl opacity-0 group-hover/volume:opacity-100 transition-opacity z-20 pointer-events-none"
+               style={{ left: `calc(${volume * 100}% - 6px)` }}
              />
              <input 
                type="range"
@@ -192,12 +216,10 @@ const Player = () => {
                step="0.01"
                value={volume}
                onChange={(e) => setVolume(parseFloat(e.target.value))}
-               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+               className="absolute inset-0 w-full h-5 -top-2 opacity-0 cursor-pointer z-30"
              />
           </div>
         </div>
-
-        <PlayerExtraBtn icon={<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.53 9.47a.75.75 0 0 1 0 1.06l-2.72 2.72h1.018a.75.75 0 0 1 0 1.5H1.25v-3.578a.75.75 0 0 1 1.5 0V12.16l2.72-2.72a.75.75 0 0 1 1.06 0zm2.94-2.94a.75.75 0 0 1 0-1.06l2.72-2.72h-1.018a.75.75 0 1 1 0-1.5h3.578v3.578a.75.75 0 0 1-1.5 0V3.84l-2.72 2.72a.75.75 0 0 1-1.06 0z"></path></svg>} />
       </div>
     </div>
   );

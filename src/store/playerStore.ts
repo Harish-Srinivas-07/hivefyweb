@@ -18,7 +18,11 @@ interface PlayerState {
   currentTime: number;
   duration: number;
   volume: number;
-  seekTo: number | null; // For UI-triggered seeks
+  seekTo: number | null; 
+
+  // UI state
+  showQueue: boolean;
+  setShowQueue: (show: boolean) => void;
 
   // Weighted shuffle history
   recentlyPlayed: string[]; 
@@ -62,6 +66,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   volume: 1.0,
   seekTo: null,
   
+  showQueue: false,
+  setShowQueue: (show) => set({ showQueue: show }),
+
   recentlyPlayed: [],
 
   playSong: (song, queueContext) => {

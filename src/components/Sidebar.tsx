@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SaavnAPI, LatestSaavnFetcher, decodeHtml } from '@/services/api';
+import { historyService } from '@/services/history';
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -14,26 +15,51 @@ const Sidebar = () => {
   React.useEffect(() => {
     const fetchLibrary = async () => {
       try {
-        const [playlists, albums] = await Promise.all([
-          LatestSaavnFetcher.getLatestPlaylists("tamil", 10).catch(() => []),
-          LatestSaavnFetcher.getLatestAlbums("tamil", 10).catch(() => [])
-        ]);
+        // 1. Get real history from historyService
+        const recentHistory = await historyService.getHistory();
         
-        let combined = [
-          ...playlists.map(p => ({ ...p, libType: 'playlist' })),
-          ...albums.map(a => ({ ...a, libType: 'album' }))
-        ];
+        let items: any[] = recentHistory.map(h => ({
+          ...h,
+          libType: h.type
+        }));
 
-        // Ensure at least 4 items, if not, fetch global hits
-        if (combined.length < 4) {
-          const globalRes = await SaavnAPI.searchPlaylists("top hits", 0, 10);
-          if (globalRes && globalRes.results) {
-            const extra = globalRes.results.map(p => ({ ...p, libType: 'playlist' }));
-            combined = [...combined, ...extra];
+        // 2. Fallback to Latest Playlists/Albums if history is short
+        if (items.length < 15) {
+          const languages = ['tamil', 'hindi', 'english', 'telugu', 'punjabi'];
+          const randomLang = languages[Math.floor(Math.random() * languages.length)];
+          const randomLang2 = languages[(languages.indexOf(randomLang) + 1) % languages.length];
+
+          const [playlists, albums] = await Promise.all([
+             LatestSaavnFetcher.getLatestPlaylists(randomLang, 10).catch(() => []),
+             LatestSaavnFetcher.getLatestAlbums(randomLang2, 10).catch(() => [])
+          ]);
+          
+          const latestItems = [
+            ...playlists.map(p => ({ ...p, libType: 'playlist' })),
+            ...albums.map(a => ({ ...a, libType: 'album' }))
+          ];
+
+          // 3. Keep history first, then add unique latest items
+          const seenIds = new Set(items.map(i => i.id));
+          for (const li of latestItems) {
+            if (!seenIds.has(li.id)) {
+               items.push(li);
+               seenIds.add(li.id);
+            }
+            if (items.length >= 20) break;
+          }
+        }
+
+        // 4. Final safety fallback to global search if still too few
+        if (items.length < 4) {
+          const global = await SaavnAPI.searchPlaylists("top hits", 0, 10);
+          if (global?.results) {
+            const extra = global.results.map(p => ({ ...p, libType: 'playlist' }));
+            items = [...items, ...extra];
           }
         }
         
-        setLibraryItems(combined.sort(() => 0.5 - Math.random()).slice(0, 15));
+        setLibraryItems(items.slice(0, 15));
       } catch (e) {
         console.error("Failed to fetch library items:", e);
       } finally {
@@ -45,34 +71,6 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col h-full gap-2 font-spotify">
-      {/* Top Nav Box */}
-      <nav className="flex flex-col gap-1 px-3 py-2 rounded-xl bg-surface-base">
-        <Link href="/" className="px-3 pt-4 mb-2 group">
-          <div className="flex items-center gap-3 cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]">
-            <Image 
-              src="/assets/icons/logo.png" 
-              alt="Hivefy Logo" 
-              width={34} 
-              height={34} 
-              className="drop-shadow-[0_0_10px_rgba(30,215,96,0.4)]" 
-            />
-            <span className="text-2xl font-black tracking-tight text-white group-hover:text-primary transition-colors">Hivefy</span>
-          </div>
-        </Link>
-        <SidebarNavItem 
-          href="/" 
-          label="Home" 
-          icon="/assets/icons/home.png" 
-          active={pathname === '/'} 
-        />
-        <SidebarNavItem 
-          href="/search" 
-          label="Search" 
-          icon="/assets/icons/search.png" 
-          active={pathname === '/search'} 
-        />
-      </nav>
-
       {/* Library Box */}
       <div className="flex flex-col flex-1 overflow-hidden rounded-xl bg-surface-base">
         <header className="px-5 pt-5 pb-2">
@@ -92,7 +90,7 @@ const Sidebar = () => {
                 <Image src="/assets/icons/add.png" alt="Add" width={16} height={16} className="transition-opacity invert opacity-70 group-hover:opacity-100" />
               </button>
               <button className="flex items-center justify-center transition-all rounded-full w-8 h-8 text-text-subdued hover:text-text-base hover:bg-bg-highlight group">
-                <Image src="/assets/icons/next.png" alt="Expand" width={16} height={16} className="transition-opacity invert opacity-70 group-hover:opacity-100 -rotate-90 md:rotate-0" />
+                <Image src="/assets/icons/down_arrow.png" alt="Expand" width={16} height={16} className="transition-opacity invert opacity-70 group-hover:opacity-100 -rotate-90 md:rotate-0" />
               </button>
             </div>
           </div>
@@ -188,7 +186,7 @@ const FilterChip = ({ label, active }: { label: string; active?: boolean }) => (
 const LibraryItem = ({ title, subtitle, image, pinned, active, href = '#', isRemote }: any) => {
   const content = (
     <div className={`group flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200 ${active ? 'bg-white/10 shadow-sm' : 'hover:bg-white/5'}`}>
-      <div className={`flex items-center justify-center w-12 h-12 overflow-hidden rounded-md ${pinned ? 'bg-gradient-to-br from-[#450af5] to-[#c4efd9]' : 'bg-bg-highlight'} shadow-md transition-transform group-hover:scale-105 relative`}>
+      <div className={`flex items-center justify-center w-12 h-12 overflow-hidden rounded-md ${pinned ? 'bg-gradient-to-br from-[#056923] to-[#1ed760]' : 'bg-bg-highlight'} shadow-md transition-transform group-hover:scale-105 relative`}>
         <Image 
           src={image} 
           alt={title} 

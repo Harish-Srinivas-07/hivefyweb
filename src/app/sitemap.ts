@@ -1,8 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://hivefy.vercel.app'; // Defaulting to firebase web app domain
-
+  const baseUrl = 'https://hivefyweb.vercel.app'; 
   return [
     {
       url: baseUrl,
