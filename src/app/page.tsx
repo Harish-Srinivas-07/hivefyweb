@@ -1,10 +1,13 @@
 import MainContent from "@/components/MainContent";
 import { SaavnAPI, LatestSaavnFetcher } from "@/services/api";
-import { Suspense } from "react";
-import Loading from "./loading";
+import { cookies } from "next/headers";
+import { MusicLanguage } from "@/store/languageStore";
 
-async function HomeContent() {
-  // Fetch required data based on Dart Dashboard logic
+export default async function Home() {
+  const cookieStore = await cookies();
+  const language = (cookieStore.get('music-language')?.value as MusicLanguage) || 'tamil';
+
+  // Fetch required data directly in the server component
   const [
     latestPlaylists,
     albums,
@@ -12,11 +15,11 @@ async function HomeContent() {
     partyRes,
     artistSearchRes
   ] = await Promise.all([
-    LatestSaavnFetcher.getLatestPlaylists("tamil", 30, 50),
-    LatestSaavnFetcher.getLatestAlbums("tamil", 30, 50),
-    SaavnAPI.searchPlaylists("love tamil", 0, 20),
-    SaavnAPI.searchPlaylists("party tamil", 0, 20),
-    SaavnAPI.searchArtists("top artist", 0, 20),
+    LatestSaavnFetcher.getLatestPlaylists(language, 30, 50).catch(() => []),
+    LatestSaavnFetcher.getLatestAlbums(language, 30, 50).catch(() => []),
+    SaavnAPI.searchPlaylists(`love ${language}`, 0, 20).catch(() => null),
+    SaavnAPI.searchPlaylists(`party ${language}`, 0, 20).catch(() => null),
+    SaavnAPI.searchArtists(`latest ${language} artists`, 0, 20).catch(() => null),
   ]);
 
   const lovePlaylists = loveRes?.results || [];
@@ -46,13 +49,5 @@ async function HomeContent() {
       love={loveShuffled}
       artists={artists}
     />
-  );
-}
-
-export default function Home() {
-  return (
-    <Suspense fallback={<Loading />}>
-      <HomeContent />
-    </Suspense>
   );
 }

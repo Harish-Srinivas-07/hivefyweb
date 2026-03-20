@@ -30,15 +30,37 @@ export const decodeHtml = (str: string): string => {
 const mapMediaItem = (item: any) => {
   if (!item) return item;
   const mapped = { ...item };
-  if (item.name && !item.title) mapped.title = item.name;
-  if (!item.name && item.title) mapped.name = item.title;
+  if (item.name && !item.title) mapped.title = decodeHtml(item.name);
+  if (!item.name && item.title) mapped.name = decodeHtml(item.title);
+  if (mapped.title) mapped.title = decodeHtml(mapped.title);
+  if (mapped.name) mapped.name = decodeHtml(mapped.name);
   
-  // Handle artists mapping for singular artist field (used by UI components)
+  // Handle artists mapping for search results and core objects
   if (item.artists && typeof item.artists === 'object' && !item.artist) {
     const primary = item.artists.primary;
     if (Array.isArray(primary) && primary.length > 0) {
-      mapped.artist = primary[0].name || primary[0].title;
+      mapped.artist = decodeHtml(primary[0].name || primary[0].title);
     }
+  }
+
+  if (!mapped.artist && item.subtitle) {
+     // subtitle is often "Artist1, Artist2 - Album"
+     const parts = item.subtitle.split(' - ');
+     mapped.artist = decodeHtml(parts[0]);
+  }
+
+  if (!mapped.artist && item.description) {
+     mapped.artist = decodeHtml(item.description);
+  }
+
+  if (!mapped.artist && item.primaryArtists) {
+     mapped.artist = decodeHtml(item.primaryArtists);
+  }
+
+  // Ensure duration is mapped correctly for ALL API structures
+  const rawDuration = item.duration || item.more_info?.duration || item.moreInfo?.duration;
+  if (rawDuration && !mapped.duration) {
+     mapped.duration = parseInt(rawDuration, 10);
   }
 
   // Handle downloadUrls normalization

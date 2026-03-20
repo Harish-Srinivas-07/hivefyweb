@@ -20,9 +20,17 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
     }
   };
 
-  const formatDuration = (secondsStr?: string | number | null) => {
-    if (!secondsStr) return "0:00";
-    const totalSeconds = typeof secondsStr === 'string' ? parseInt(secondsStr, 10) : secondsStr;
+  const formatDuration = (dur?: string | number | null) => {
+    if (!dur) return "0:00";
+    
+    // If it's a string like "3:45"
+    if (typeof dur === 'string' && dur.includes(':')) {
+       return dur;
+    }
+
+    const totalSeconds = typeof dur === 'string' ? parseInt(dur, 10) : dur;
+    if (isNaN(totalSeconds)) return "0:00";
+
     const m = Math.floor(totalSeconds / 60);
     const s = Math.floor(totalSeconds % 60);
     return `${m}:${s.toString().padStart(2, '0')}`;

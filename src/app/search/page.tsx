@@ -26,11 +26,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   }
 
   // Fetch from the search API endpoint using the global search for all media types
-  const searchResults = await SaavnAPI.globalSearch(query);
+  const [searchResults, searchSongsResult] = await Promise.all([
+    SaavnAPI.globalSearch(query),
+    SaavnAPI.searchSongs(query, 0, 20)
+  ]);
 
-  const songs = searchResults?.songs?.results || [];
+  const globalSongs = searchResults?.songs?.results || [];
   const albums = searchResults?.albums?.results || [];
   const playlists = searchResults?.playlists?.results || [];
+
+  // Combine global top songs with deeper song search results, deduplicating by ID
+  // Prioritize deeper search results as they often have better metadata (like duration)
+  const songMap = new Map();
+  searchSongsResult.forEach(s => songMap.set(s.id, s));
+  globalSongs.forEach(s => {
+    if (!songMap.has(s.id)) songMap.set(s.id, s);
+  });
+  const songs = Array.from(songMap.values());
 
   return (
     <div className="flex flex-col gap-8 p-6">

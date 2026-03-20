@@ -73,16 +73,19 @@
 │   │   │       ├── loading.tsx
 │   │   │       └── page.tsx
 │   │   ├── api
+│   │   │   ├── dev
+│   │   │   │   └── save
 │   │   │   └── suggestions
 │   │   │       └── route.ts
 │   │   ├── playlist
-│   │   │   └── [id]
-│   │   │       ├── loading.tsx
+│   │   │   ├── [id]
+│   │   │   │   ├── loading.tsx
+│   │   │   │   └── page.tsx
+│   │   │   └── liked
 │   │   │       └── page.tsx
 │   │   ├── search
 │   │   │   ├── loading.tsx
 │   │   │   └── page.tsx
-│   │   ├── favicon.ico
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   ├── loading.tsx
@@ -91,18 +94,23 @@
 │   │   └── sitemap.ts
 │   ├── components
 │   │   ├── AudioController.tsx
+│   │   ├── BottomNav.tsx
 │   │   ├── LayoutWrapper.tsx
 │   │   ├── MainContent.tsx
 │   │   ├── MediaDetailView.tsx
 │   │   ├── Player.tsx
+│   │   ├── QueuePanel.tsx
 │   │   ├── Sidebar.tsx
 │   │   ├── SongList.tsx
 │   │   └── TopBar.tsx
 │   ├── services
+│   │   ├── AudioService.ts
 │   │   ├── api.ts
 │   │   ├── cache.ts
+│   │   ├── history.ts
 │   │   └── offlineAudioManager.ts
 │   ├── store
+│   │   ├── likesStore.ts
 │   │   └── playerStore.ts
 │   └── types
 │       └── index.ts

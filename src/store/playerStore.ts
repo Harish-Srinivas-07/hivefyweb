@@ -197,20 +197,22 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   toggleShuffle: () => {
     const { isShuffling, originalQueue, currentSong } = get();
-    if (originalQueue.length === 0 || !currentSong) return;
+    const newShuffle = !isShuffling;
+    
+    set({ isShuffling: newShuffle });
 
-    if (isShuffling) {
+    if (!currentSong || originalQueue.length === 0) return;
+
+    if (newShuffle) {
+       // Enable shuffle
+       get()._applyShuffle(currentSong);
+    } else {
        // Disable shuffle: restore original queue
        const origIndex = originalQueue.findIndex(s => s.id === currentSong.id);
        set({
-         isShuffling: false,
          queue: [...originalQueue],
          currentIndex: Math.max(0, origIndex)
        });
-    } else {
-       // Enable shuffle
-       set({ isShuffling: true });
-       get()._applyShuffle(currentSong);
     }
   },
 

@@ -20,7 +20,7 @@
   --color-surface-elevated-hover: #2a2a2a;
 
   --spacing-sidebar: 280px;
-  --spacing-player: 90px;
+  --spacing-player: 72px;
   --spacing-topbar: 64px;
 
   --animate-press: scale(0.98);
@@ -45,7 +45,7 @@
 
   /* Layout */
   --sidebar-width: 280px;
-  --player-height: 90px;
+  --player-height: 72px;
   --topbar-height: 64px;
 }
 

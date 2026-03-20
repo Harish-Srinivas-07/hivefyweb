@@ -8,13 +8,23 @@ import Player from "@/components/Player";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import AudioController from "@/components/AudioController";
+import { audioService } from '@/services/AudioService';
 
 export default function LayoutWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { currentSong, showQueue } = usePlayerStore();
+  const { currentSong, showQueue, nextSong, prevSong } = usePlayerStore();
+
+  React.useEffect(() => {
+    const unNext = audioService.on('next', () => nextSong());
+    const unPrev = audioService.on('prev', () => prevSong());
+    return () => {
+      unNext();
+      unPrev();
+    };
+  }, [nextSong, prevSong]);
 
   return (
     <div className="flex flex-col h-screen bg-bg-base font-spotify">
@@ -46,7 +56,7 @@ export default function LayoutWrapper({
           className="relative flex flex-col overflow-hidden rounded-lg bg-surface-base"
           style={{ gridArea: 'main' }}
         >
-          <div className="flex-1 px-8 pb-32 overflow-y-auto overflow-x-hidden scrollbar-hide">
+          <div className="flex-1 pb-32 overflow-y-auto overflow-x-hidden scrollbar-hide">
             {children}
           </div>
         </main>
