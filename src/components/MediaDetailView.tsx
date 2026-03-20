@@ -61,15 +61,11 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
   };
 
   const getArtistsString = (item: any) => {
-    if (typeof item.primaryArtists === 'string') return item.primaryArtists;
-    if (Array.isArray(item.primaryArtists)) {
-      const names = item.primaryArtists.map((a: any) => a.name || a.title || '').filter(Boolean);
-      if (names.length > 0) return names.join(', ');
-    }
-    const artistVal = item.artist || item.artists?.primary?.[0]?.name || item.artists?.[0]?.name;
-    if (artistVal && typeof artistVal === 'object') {
-      return (artistVal as any).name || (artistVal as any).title || 'Various Artists';
-    }
+    const artistVal = item.artist || 
+                     (Array.isArray(item.artists?.primary) ? item.artists.primary.map((a: any) => a.name || a.title).join(', ') : '') ||
+                     (Array.isArray(item.singers) ? item.singers.map((s: any) => s.name || s.title).join(', ') : '') ||
+                     'Various Artists';
+    
     return typeof artistVal === 'string' ? artistVal : 'Various Artists';
   };
 

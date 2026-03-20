@@ -16,7 +16,7 @@ async function HomeContent() {
     LatestSaavnFetcher.getLatestAlbums("tamil", 30, 50),
     SaavnAPI.searchPlaylists("love tamil", 0, 20),
     SaavnAPI.searchPlaylists("party tamil", 0, 20),
-    SaavnAPI.searchArtists("top artists tamil", 0, 20),
+    SaavnAPI.searchArtists("top artist", 0, 20),
   ]);
 
   const lovePlaylists = loveRes?.results || [];

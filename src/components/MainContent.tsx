@@ -27,6 +27,14 @@ const MainContent: React.FC<MainContentProps> = ({
 }) => {
   const [activeCategory, setActiveCategory] = React.useState<{ title: string, items: any[], type: 'playlist' | 'album' | 'artist' } | null>(null);
 
+  React.useEffect(() => {
+    // When category changes, scroll the main content area to top
+    const scrollContainer = document.querySelector('main > div');
+    if (scrollContainer) {
+      scrollContainer.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [activeCategory]);
+
   const getImageUrl = (item: any) => {
     if (Array.isArray(item.images) && item.images.length > 0) {
       return item.images[item.images.length - 1].url || item.images[item.images.length - 1].link || item.images[0].url || '/assets/icons/logo.png';

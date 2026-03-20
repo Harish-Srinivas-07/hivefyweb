@@ -20,7 +20,7 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
     }
   };
 
-  const formatDuration = (secondsStr?: string | number) => {
+  const formatDuration = (secondsStr?: string | number | null) => {
     if (!secondsStr) return "0:00";
     const totalSeconds = typeof secondsStr === 'string' ? parseInt(secondsStr, 10) : secondsStr;
     const m = Math.floor(totalSeconds / 60);
@@ -29,21 +29,12 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
   };
 
   const getArtistsString = (song: any) => {
-    if (typeof song.primaryArtists === 'string') return song.primaryArtists;
-    if (Array.isArray(song.primaryArtists)) {
-      const names = song.primaryArtists.map((a: any) => a.name || a.title || '').filter(Boolean);
-      if (names.length > 0) return names.join(', ');
-    }
-    if (typeof song.artist === 'string') return song.artist;
-    if (song.artist && typeof song.artist === 'object') return (song.artist as any).name || (song.artist as any).title || 'Unknown Artist';
+    const artistVal = song.artist || 
+                     (Array.isArray(song.artists?.primary) ? song.artists.primary.map((a: any) => a.name || a.title).join(', ') : '') ||
+                     (Array.isArray(song.singers) ? song.singers.map((s: any) => s.name || s.title).join(', ') : '') ||
+                     'Unknown Artist';
     
-    if (typeof song.singers === 'string') return song.singers;
-    if (Array.isArray(song.singers)) {
-      const names = song.singers.map((a: any) => a.name || a.title || '').filter(Boolean);
-      if (names.length > 0) return names.join(', ');
-    }
-    
-    return 'Unknown Artist';
+    return typeof artistVal === 'string' ? artistVal : 'Unknown Artist';
   };
 
   const getAlbumString = (song: any) => {
@@ -106,7 +97,7 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
               <div className="flex items-center gap-3 md:gap-4 overflow-hidden">
                 {imageObj && (
                   <div className="flex-shrink-0 relative overflow-hidden rounded shadow-md group-hover:shadow-lg transition-all duration-300 w-10 h-10">
-                    <Image src={imageObj.url} alt={song.title} fill className="object-cover transition-transform group-hover:scale-110" />
+                    <Image src={imageObj.url} alt={song.title || ''} fill className="object-cover transition-transform group-hover:scale-110" />
                   </div>
                 )}
                 <div className="flex flex-col gap-0.5 md:gap-1 min-w-0">

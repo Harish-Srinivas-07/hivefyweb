@@ -46,9 +46,9 @@ export default function AudioController() {
 
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentSong.title,
-        artist: currentSong.primaryArtists || 'Unknown Artist',
-        album: currentSong.album || '',
+        title: currentSong.title || '',
+        artist: currentSong.artist || 'Unknown Artist',
+        album: (typeof currentSong.album === 'object' ? currentSong.album?.name : currentSong.album) || '',
         artwork: currentSong.images ? currentSong.images.map((img: SourceUrl) => ({
           src: img.url,
           sizes: '500x500', 
