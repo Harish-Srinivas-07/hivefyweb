@@ -44,6 +44,9 @@ interface PlayerState {
   seek: (time: number) => void; 
   resetSeek: () => void;
   
+  addToQueue: (song: SongDetail) => void;
+  addSongsToQueue: (songs: SongDetail[]) => void;
+  
   // Internal/Advanced helpers
   _applyShuffle: (current: SongDetail) => void;
   _registerPlay: (songId: string) => void;
@@ -194,6 +197,23 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     audioService.seek(time);
   },
   resetSeek: () => set({ seekTo: null }),
+  
+  addToQueue: (song) => {
+    const { queue, originalQueue } = get();
+    // Check if duplicate to avoid confusing user? Actually Spotify allows duplicates
+    set({
+      queue: [...queue, song],
+      originalQueue: [...originalQueue, song]
+    });
+  },
+
+  addSongsToQueue: (songs) => {
+    const { queue, originalQueue } = get();
+    set({
+      queue: [...queue, ...songs],
+      originalQueue: [...originalQueue, ...songs]
+    });
+  },
 
   toggleShuffle: () => {
     const { isShuffling, originalQueue, currentSong } = get();

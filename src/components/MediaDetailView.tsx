@@ -14,9 +14,11 @@ interface MediaDetailViewProps {
 }
 
 export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
-  const { playSong, currentSong, isPlaying, isShuffling, toggleShuffle } = usePlayerStore();
+  const { playSong, currentSong, isPlaying, isShuffling, toggleShuffle, addToQueue, addSongsToQueue } = usePlayerStore();
   const { toggleLike, isLiked } = useLikesStore();
   const [showLargeImage, setShowLargeImage] = React.useState(false);
+  const [activeMenuId, setActiveMenuId] = React.useState<string | null>(null);
+  const [showToast, setShowToast] = React.useState<string | null>(null);
   const [headerOpacity, setHeaderOpacity] = React.useState(0);
   const [isHeaderSticky, setIsHeaderSticky] = React.useState(false);
   const [dominantColor, setDominantColor] = React.useState('rgb(83, 83, 83)');
@@ -50,22 +52,40 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
 
     const handleScroll = () => {
       const scrollY = scrollContainer.scrollTop;
-      
-      // Calculate opacity for the sticky top bar background
       const threshold = 200;
       const opacity = Math.min(1, scrollY / threshold);
       setHeaderOpacity(opacity);
 
-      // Determine if the title should be sticky
       if (headerRef.current) {
          const headerBottom = headerRef.current.offsetTop + headerRef.current.offsetHeight - 64;
          setIsHeaderSticky(scrollY > headerBottom);
       }
     };
 
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.dropdown-trigger') && !target.closest('.dropdown-menu')) {
+        setActiveMenuId(null);
+      }
+    };
+
     scrollContainer.addEventListener('scroll', handleScroll);
-    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
+
+  const copyToClipboard = async (text: string, message: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setShowToast(message);
+      setTimeout(() => setShowToast(null), 2000);
+    } catch (e) {
+      console.error("Copy failed:", e);
+    }
+  };
 
   React.useEffect(() => {
     if (data && data.id) {
@@ -225,7 +245,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
       </div>
 
         {/* Action Bar */}
-        <div className="flex items-center gap-6 md:gap-8 px-6 md:px-8 py-4 md:py-6 z-10 sticky top-[64px] bg-transparent lg:static">
+        <div className="flex items-center gap-6 md:gap-8 px-6 md:px-8 py-4 md:py-6 z-[110] sticky top-[64px] bg-transparent lg:static">
           <button 
             className="w-12 h-12 md:w-[56px] md:h-[56px] bg-primary rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-105 hover:bg-primary-hover active:scale-95 group" 
             onClick={handlePlayAll}
@@ -260,15 +280,53 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
               <Image src="/assets/icons/like.png" alt="Like" width={30} height={30} className="invert opacity-70 group-hover:opacity-100" />
             )}
           </button>
-          <button className="text-text-subdued transition-all hover:scale-110 hover:text-white active:scale-95 group">
-             <Image src="/assets/icons/menu.png" alt="More" width={28} height={28} className="invert opacity-70 group-hover:opacity-100" />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setActiveMenuId(activeMenuId === 'main' ? null : 'main')}
+              className={`dropdown-trigger text-text-subdued transition-all hover:scale-110 hover:text-white active:scale-95 group p-1.5 rounded-full ${activeMenuId === 'main' ? 'bg-white/10 text-white' : ''}`}
+            >
+               <Image src="/assets/icons/menu.png" alt="More" width={28} height={28} className="invert opacity-70 group-hover:opacity-100" />
+            </button>
+            
+            {activeMenuId === 'main' && (
+              <div className="dropdown-menu absolute top-[calc(100%+8px)] left-0 w-52 bg-[#282828] rounded-md shadow-2xl border border-white/[0.05] py-1.5 z-[2000] animate-in fade-in zoom-in-95 duration-100 fill-mode-forwards">
+                <MenuOption 
+                  onClick={() => {
+                    addSongsToQueue(data.songs || []);
+                    setActiveMenuId(null);
+                    setShowToast("Added all tracks to queue");
+                    setTimeout(() => setShowToast(null), 2000);
+                  }}
+                  icon={<Image src="/assets/icons/add_to_queue.png" alt="" width={18} height={18} className="invert opacity-70" />}
+                  label="Add to Queue"
+                />
+                <MenuOption 
+                  onClick={() => {
+                    const protocol = window.location.protocol;
+                    const host = window.location.host;
+                    copyToClipboard(`${protocol}//${host}/${type}/${data.id}`, "Link copied to clipboard");
+                    setActiveMenuId(null);
+                  }}
+                  icon={<Image src="/assets/icons/spotify_share.png" alt="" width={18} height={18} className="invert opacity-70" />}
+                  label="Copy Link"
+                />
+                 <div className="h-[1px] bg-white/[0.05] my-1 mx-2" />
+                 <MenuOption 
+                  onClick={() => {
+                    toggleLike(data, type);
+                    setActiveMenuId(null);
+                  }}
+                  label={isLiked(data.id) ? "Remove from Library" : "Save to Your Library"}
+                />
+              </div>
+            )}
+          </div>
         </div>
       {/* Song List Content */}
       <div className="flex-1 px-4 md:px-8 pb-32">
         {/* Track List Header labels */}
         <div className="sticky top-[64px] z-[90] bg-[#121212] px-4 py-3 mb-4 border-b border-white/10 shadow-md">
-          <div className="grid grid-cols-[16px_4fr_3fr_2fr_80px] gap-4 text-[#b3b3b3] text-[11px] uppercase tracking-[0.1em] font-bold items-center pr-4">
+          <div className="grid grid-cols-[16px_1fr_80px] md:grid-cols-[16px_4fr_2fr_80px] lg:grid-cols-[16px_4fr_3fr_2fr_80px] gap-4 text-[#b3b3b3] text-[11px] uppercase tracking-[0.1em] font-bold items-center pr-4">
             <div className="flex justify-center text-[12px]">#</div>
             <div>Title</div>
             <div className="hidden lg:block">Album</div>
@@ -285,7 +343,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
             return (
               <div 
                 key={song.id} 
-                className={`grid grid-cols-[16px_4fr_3fr_2fr_80px] gap-4 px-4 py-2 rounded-md items-center cursor-pointer transition-colors duration-300 group ${isCurrent ? 'bg-white/10' : 'hover:bg-white/5'}`}
+                className={`grid grid-cols-[16px_1fr_80px] md:grid-cols-[16px_4fr_2fr_80px] lg:grid-cols-[16px_4fr_3fr_2fr_80px] gap-4 px-4 py-2 rounded-md items-center cursor-pointer transition-colors duration-300 group ${isCurrent ? 'bg-white/10' : 'hover:bg-white/5'} ${activeMenuId === song.id ? 'relative z-[100]' : 'z-0'}`}
                 onClick={() => playSong(song, data.songs || [])}
               >
                 <div className="flex items-center justify-center relative w-4">
@@ -311,12 +369,13 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
                 </div>
                 <div className="hidden lg:block text-[13px] text-text-subdued truncate font-medium group-hover:text-white transition-colors">{safeString(song.albumName || song.album?.name || song.album || data.name || data.title)}</div>
                 <div className="hidden md:block text-[13px] text-text-subdued truncate font-medium transition-colors">{formatRelativeDate(song)}</div>
-                <div className="flex items-center justify-end gap-4 text-[13px] text-text-subdued font-medium transition-colors pr-2 md:pr-4 group-hover:text-white">                  <button 
+                <div className="flex items-center justify-end gap-4 text-[13px] text-text-subdued font-medium transition-colors pr-2 md:pr-4 group-hover:text-white">
+                  <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleLike(song, 'song');
                     }}
-                    className={`opacity-0 group-hover:opacity-100 transition-opacity`}
+                    className={`transition-opacity ${isLiked(song.id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                   >
                     {isLiked(song.id) ? (
                       <Image src="/assets/icons/heart.png" alt="Liked" width={16} height={16} className="brightness-110" />
@@ -325,7 +384,55 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
                     )}
                   </button>
 
-                  <span>{formatDuration(song.duration)}</span>
+                  <div className="relative">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveMenuId(activeMenuId === song.id ? null : song.id);
+                      }}
+                      className={`dropdown-trigger p-1 hover:text-white transition-all rounded-full ${activeMenuId === song.id ? 'bg-white/10 text-white opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M10 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0 10a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path></svg>
+                    </button>
+
+                    {activeMenuId === song.id && (
+                      <div className="dropdown-menu absolute top-full right-0 mt-2 w-48 bg-[#282828] rounded-md shadow-[0_16px_32px_rgba(0,0,0,0.8)] border border-white/[0.1] py-1.5 z-[5000] animate-in fade-in zoom-in-95 duration-100 fill-mode-forwards text-left">
+                        <MenuOption 
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            addToQueue(song);
+                            setActiveMenuId(null);
+                            setShowToast(`Added "${song.name || song.title}" to queue`);
+                            setTimeout(() => setShowToast(null), 2000);
+                          }}
+                          icon={<Image src="/assets/icons/add_to_queue.png" alt="" width={16} height={16} className="invert opacity-70" />}
+                          label="Add to Queue"
+                        />
+                        <MenuOption 
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            const protocol = window.location.protocol;
+                            const host = window.location.host;
+                            copyToClipboard(`${protocol}//${host}/song/${song.id}`, "Song link copied");
+                            setActiveMenuId(null);
+                          }}
+                          icon={<Image src="/assets/icons/share.png" alt="" width={16} height={16} className="invert opacity-70" />}
+                          label="Copy Song Link"
+                        />
+                         <div className="h-[1px] bg-white/[0.05] my-1 mx-2" />
+                         <MenuOption 
+                          onClick={(e: any) => {
+                             e.stopPropagation();
+                             toggleLike(song, 'song');
+                             setActiveMenuId(null);
+                          }}
+                          label={isLiked(song.id) ? "Remove from Liked Songs" : "Like"}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <span className="min-w-[40px] text-right">{formatDuration(song.duration)}</span>
                 </div>
               </div>
             );
@@ -366,6 +473,22 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
            </div>
         </div>
       )}
-    </div >
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[10000] bg-primary text-black px-6 py-3 rounded-full font-bold shadow-2xl animate-in slide-in-from-bottom-4 fade-in duration-300">
+           {showToast}
+        </div>
+      )}
+    </div>
   );
 }
+
+const MenuOption = ({ label, icon, onClick }: { label: string; icon?: React.ReactNode; onClick: (e: any) => void }) => (
+  <button 
+    onClick={onClick}
+    className="w-full text-left px-3 py-2 text-[13px] font-bold text-white/80 hover:text-white hover:bg-white/[0.08] flex items-center justify-between transition-colors"
+  >
+    <span>{label}</span>
+    {icon}
+  </button>
+);

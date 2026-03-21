@@ -111,7 +111,7 @@ const SearchInput = () => {
       </div>
 
       {showSuggestions && (
-        <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-[#282828] rounded-xl shadow-[0_32px_64px_rgba(0,0,0,0.9)] border border-white/10 overflow-hidden z-[5000] animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-black/90 md:bg-[#282828] rounded-xl shadow-[0_32px_64px_rgba(0,0,0,0.9)] border border-white/10 overflow-hidden z-[5000] animate-in fade-in slide-in-from-top-2 duration-300">
           {suggestions.map((s, i) => (
             <button
               key={`${s}-${i}`}
@@ -156,7 +156,7 @@ const LanguageMenu = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-[calc(100%+8px)] right-0 w-44 md:w-48 bg-[#282828] rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.8)] border border-white/[0.05] py-2 z-[6000] animate-in fade-in zoom-in duration-150 overflow-hidden">
+        <div className="absolute top-[calc(100%+8px)] right-0 w-44 md:w-48 bg-black/90 md:bg-[#282828] rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.8)] border border-white/[0.05] py-2 z-[6000] animate-in fade-in zoom-in duration-150 overflow-hidden">
            <div className="px-4 py-2 border-b border-white/[0.05] mb-2">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-subdued">Change Language</span>
            </div>
@@ -213,7 +213,7 @@ const ProfileMenu = () => {
       </Link>
 
       {isOpen && (
-        <div className="absolute top-[calc(100%+12px)] left-0 w-48 md:w-56 bg-[#282828] rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.8)] border border-white/[0.05] py-1 z-[4000] animate-in fade-in zoom-in duration-150">
+        <div className="absolute top-[calc(100%+12px)] left-0 w-48 md:w-56 bg-black/90 md:bg-[#282828] rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.8)] border border-white/[0.05] py-1 z-[4000] animate-in fade-in zoom-in duration-150">
            <div className="px-4 py-3 border-b border-white/[0.05] mb-1">
               <p className="text-white text-[15px] font-black tracking-tight truncate">Harish Srinivas</p>
               <p className="text-text-subdued text-[10px] font-black uppercase tracking-[0.15em] mt-0.5">Software Developer</p>

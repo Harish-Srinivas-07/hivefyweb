@@ -83,7 +83,7 @@ const Player = () => {
     <div className="flex items-center justify-between w-full h-full font-spotify px-2 md:px-0">
       
       {/* Current Song Info */}
-      <div className="flex items-center gap-3 md:gap-4 w-[240px] md:w-[280px] lg:w-[320px] flex-shrink-0 min-w-0">
+      <div className="flex items-center gap-2 md:gap-4 flex-1 md:flex-none min-w-0">
         <div className="relative flex-shrink-0 group overflow-hidden rounded-md shadow-lg w-10 h-10 md:w-[52px] md:h-[52px]">
           <Image 
             src={highestResImage} 
@@ -96,28 +96,28 @@ const Player = () => {
           <div className="text-[13px] md:text-[14px] font-bold text-white hover:underline cursor-pointer truncate transition-colors">
             {decodeHtml(currentSong.title || (currentSong as any).name || 'Unknown Track')}
           </div>
-          <div className="text-[11px] md:text-[12px] text-text-subdued hover:text-white hover:underline cursor-pointer truncate transition-colors">
+          <div className="text-[11px] md:text-[12px] text-text-subdued truncate transition-colors">
             {decodeHtml(artistsStr)}
           </div>
         </div>
-          <button 
-            onClick={() => toggleLike(currentSong, 'song')}
-            className={`flex-shrink-0 w-8 h-8 flex items-center justify-center transition-all hover:scale-110 active:scale-90 ml-2`}
-          >
-            {isLiked(currentSong.id) ? (
-              <Image src="/assets/icons/heart.png" alt="Liked" width={18} height={18} className="brightness-110" />
-            ) : (
-              <Image src="/assets/icons/like.png" alt="Like" width={18} height={18} className="invert opacity-70 hover:opacity-100" />
-            )}
-          </button>
+        <button 
+          onClick={() => toggleLike(currentSong, 'song')}
+          className="hidden md:flex flex-shrink-0 w-8 h-8 items-center justify-center transition-all hover:scale-110 active:scale-90 ml-2"
+        >
+          {isLiked(currentSong.id) ? (
+            <Image src="/assets/icons/heart.png" alt="Liked" width={18} height={18} className="brightness-110" />
+          ) : (
+            <Image src="/assets/icons/like.png" alt="Like" width={18} height={18} className="invert opacity-70 hover:opacity-100" />
+          )}
+        </button>
       </div>
 
       {/* Main Player Controls */}
-      <div className="flex-1 max-w-[45%] md:max-w-[40%] flex flex-col items-center gap-1.5">
-        <div className="flex items-center gap-4 md:gap-8">
+      <div className="flex-none md:flex-1 flex flex-col items-center gap-1.5 px-2">
+        <div className="flex items-center gap-3 md:gap-8">
           <button 
             onClick={toggleShuffle}
-            className="flex flex-col items-center justify-center transition-all hover:scale-110 active:scale-90"
+            className="hidden md:flex flex-col items-center justify-center transition-all hover:scale-110 active:scale-90"
           >
             <div className="relative flex flex-col items-center">
                <Image 
@@ -138,17 +138,17 @@ const Player = () => {
             onClick={prevSong}
             className="text-text-subdued hover:text-white transition-all hover:scale-110 active:scale-90"
           >
-            <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.575a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7h1.6z"></path></svg>
+            <svg role="img" height="20" width="20" viewBox="0 0 16 16" fill="currentColor" className="md:w-4 md:h-4"><path d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.575a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7h1.6z"></path></svg>
           </button>
 
           <button 
             onClick={togglePlayPause}
-            className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 transition-all active:scale-95 shadow-lg"
+            className="w-10 h-10 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 transition-all active:scale-95 shadow-lg"
           >
             {isPlaying ? (
-              <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"></path></svg>
+              <svg role="img" height="18" width="18" viewBox="0 0 16 16" fill="currentColor" className="md:w-4 md:h-4"><path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"></path></svg>
             ) : (
-              <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor" className="ml-0.5"><path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"></path></svg>
+              <svg role="img" height="18" width="18" viewBox="0 0 16 16" fill="currentColor" className="ml-0.5 md:w-4 md:h-4"><path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"></path></svg>
             )}
           </button>
 
@@ -156,12 +156,12 @@ const Player = () => {
             onClick={nextSong}
             className="text-text-subdued hover:text-white transition-all hover:scale-110 active:scale-90"
           >
-            <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"></path></svg>
+            <svg role="img" height="20" width="20" viewBox="0 0 16 16" fill="currentColor" className="md:w-4 md:h-4"><path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"></path></svg>
           </button>
 
           <button 
             onClick={toggleRepeat}
-            className={`transition-all hover:scale-110 active:scale-90`}
+            className="hidden md:flex transition-all hover:scale-110 active:scale-90"
           >
             <div className="relative">
               <Image 
@@ -178,8 +178,8 @@ const Player = () => {
           </button>
         </div>
 
-        {/* Progress Bar Container */}
-        <div className="flex items-center gap-2 w-full max-w-[500px]">
+        {/* Progress Bar Container: Hidden on Mobile */}
+        <div className="hidden md:flex items-center gap-2 w-full max-w-[500px]">
           <span className="text-[11px] text-text-subdued min-w-[32px] text-right">{formatTime(currentTime)}</span>
           <div 
             className="relative flex-1 h-3 flex items-center cursor-pointer group/progress"
@@ -203,8 +203,8 @@ const Player = () => {
         </div>
       </div>
 
-      {/* Control Tools */}
-      <div className="flex items-center gap-1.5 md:gap-3 w-[180px] md:w-[220px] lg:w-[260px] justify-end">
+      {/* Control Tools - Hidden on Mobile */}
+      <div className="hidden md:flex items-center gap-1.5 md:gap-3 w-[180px] md:w-[220px] lg:w-[260px] justify-end">
         <button 
           onClick={() => setShowQueue(!showQueue)}
           className="hidden sm:flex transition-all hover:scale-110 active:scale-95 p-1.5"

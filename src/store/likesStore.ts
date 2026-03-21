@@ -35,12 +35,14 @@ export const useLikesStore = create<LikesState>()(
         } else {
           // Extract basic info for the persistent store
           let name = item.title || item.name || 'Unknown';
-          let image = '';
+          let image = '/assets/icons/logo.png';
           if (Array.isArray(item.images) && item.images.length > 0) {
-            image = item.images[item.images.length - 1].url || item.images[0].url;
+            image = item.images[item.images.length - 1].url || item.images[item.images.length - 1].link || item.images[0].url;
           } else if (item.image) {
             if (typeof item.image === 'string') image = item.image;
-            else if (Array.isArray(item.image) && item.image.length > 0) image = item.image[item.image.length - 1].url || item.image[0].url;
+            else if (Array.isArray(item.image) && item.image.length > 0) {
+              image = item.image[item.image.length - 1].url || item.image[item.image.length - 1].link || item.image[0].url;
+            }
           }
 
           let artist = '';

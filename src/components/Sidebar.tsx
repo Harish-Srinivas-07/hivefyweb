@@ -11,7 +11,7 @@ import { useLanguageStore } from '@/store/languageStore';
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const { getLikedSongs } = useLikesStore();
+  const { getLikedSongs, getLikedAlbums, getLikedPlaylists, likedItems } = useLikesStore();
   const { language, availableLanguages } = useLanguageStore();
   
   const [libraryItems, setLibraryItems] = useState<any[]>([]);
@@ -40,15 +40,31 @@ const Sidebar = () => {
     setMounted(true);
     const fetchLibrary = async () => {
       try {
+        const likedAlbums = getLikedAlbums();
+        const likedPlaylists = getLikedPlaylists();
+        
+        // Start with Liked items at the top
+        let items: any[] = [
+          ...likedPlaylists.map(p => ({ ...p, libType: 'playlist', isLiked: true })),
+          ...likedAlbums.map(a => ({ ...a, libType: 'album', isLiked: true }))
+        ];
+
         const recentHistory = await historyService.getHistory();
-        let items: any[] = recentHistory.map(h => ({ ...h, libType: h.type }));
+        const historyItems = recentHistory.map(h => ({ ...h, libType: h.type }));
+        
+        const seenIds = new Set(items.map(i => i.id));
+        for (const h of historyItems) {
+           if (!seenIds.has(h.id)) {
+              items.push(h);
+              seenIds.add(h.id);
+           }
+        }
 
         if (items.length < 15) {
-          const randomLang = language;
-          const randomLang2 = availableLanguages[Math.floor(Math.random() * availableLanguages.length)];
+          const userLang = language;
           const [playlists, albums] = await Promise.all([
-             LatestSaavnFetcher.getLatestPlaylists(randomLang, 10).catch(() => []),
-             LatestSaavnFetcher.getLatestAlbums(randomLang2, 10).catch(() => [])
+             LatestSaavnFetcher.getLatestPlaylists(userLang, 10).catch(() => []),
+             LatestSaavnFetcher.getLatestAlbums(userLang, 10).catch(() => [])
           ]);
           
           const latestItems = [
@@ -56,7 +72,6 @@ const Sidebar = () => {
             ...albums.map(a => ({ ...a, libType: 'album' }))
           ];
 
-          const seenIds = new Set(items.map(i => i.id));
           for (const li of latestItems) {
             if (!seenIds.has(li.id)) {
                items.push(li);
@@ -67,7 +82,7 @@ const Sidebar = () => {
         }
 
         if (items.length < 4) {
-          const global = await SaavnAPI.searchPlaylists("top hits", 0, 10);
+          const global = await SaavnAPI.searchPlaylists(`top hits ${language}`, 0, 10);
           if (global?.results) {
             const extra = global.results.map(p => ({ ...p, libType: 'playlist' }));
             items = [...items, ...extra];
@@ -88,7 +103,7 @@ const Sidebar = () => {
       }
     };
     fetchLibrary();
-  }, [pathname, language]);
+  }, [pathname, language, likedItems]);
 
   // Filtering and Sorting
   const filteredItems = libraryItems
@@ -196,8 +211,8 @@ const Sidebar = () => {
             <SkeletonLoader />
           ) : (
             filteredItems.map((item, idx) => {
-              const imageObj = item.images && item.images.length > 0 ? item.images[0] : null;
-              const imgUrl = imageObj?.url || '/assets/icons/logo.png';
+              const imageObj = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null;
+              const imgUrl = (typeof item.image === 'string' && item.image) || imageObj?.url || imageObj?.link || '/assets/icons/logo.png';
               const typeLabel = item.libType === 'playlist' ? 'Playlist' : 'Album';
               const artistLabel = item.primaryArtists || item.artist || 'Various Artists';
               
@@ -209,6 +224,7 @@ const Sidebar = () => {
                   image={imgUrl} 
                   href={`/${item.libType}/${item.id}`}
                   isRemote
+                  isLiked={item.isLiked}
                 />
               );
             })
@@ -243,7 +259,7 @@ const SkeletonLoader = () => (
   </div>
 );
 
-const LibraryItem = ({ title, subtitle, image, pinned, active, href = '#', isRemote }: any) => {
+const LibraryItem = ({ title, subtitle, image, pinned, active, href = '#', isRemote, isLiked }: any) => {
   const content = (
     <div className={`group flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200 ${active ? 'bg-white/10 shadow-sm' : 'hover:bg-white/5'}`}>
       <div className={`flex items-center justify-center w-12 h-12 overflow-hidden rounded-md ${pinned ? 'bg-gradient-to-br from-[#450af5] to-[#c4efd9]' : 'bg-bg-highlight'} shadow-md transition-transform group-hover:scale-105 relative`}>
@@ -260,6 +276,7 @@ const LibraryItem = ({ title, subtitle, image, pinned, active, href = '#', isRem
         </div>
         <div className="flex items-center gap-1 text-[12px] text-text-subdued">
           {pinned && <span className="text-primary text-[10px] transform rotate-[15deg]">📌</span>}
+          {isLiked && <span className="text-primary text-[10px]">❤️</span>}
           <span className="truncate">{subtitle}</span>
         </div>
       </div>
