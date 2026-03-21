@@ -8,7 +8,6 @@ const MainFooter = () => {
         <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-text-subdued opacity-60">Credits</h2>
       </div>
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 max-w-7xl mx-auto">
-        {/* Minimal Developer Credits */}
         <div className="flex flex-col items-center md:items-start gap-2">
           <h2 className="text-2xl font-black text-white flex items-center gap-2">
             Harish Srinivas <span className="text-primary text-lg">👋</span>
@@ -22,7 +21,6 @@ const MainFooter = () => {
           </div>
         </div>
 
-        {/* Brand & Technical Credits */}
         <div className="flex flex-col items-center md:items-end gap-5 text-center md:text-right">
           <div className="flex flex-col items-center md:items-end gap-2">
             <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-white">Support Hivefy</h3>

@@ -1,7 +1,6 @@
 import localforage from 'localforage';
 import { SongDetail } from '@/types';
 
-// Configure instances
 const offlineSongsStore = localforage.createInstance({
   name: 'hivefyWeb',
   storeName: 'offline_songs',
@@ -24,7 +23,6 @@ export const offlineAudioManager = {
     if (!song.downloadUrls || song.downloadUrls.length === 0) return false;
     
     try {
-      // Prioritize highest quality URL
       const url = song.downloadUrls[song.downloadUrls.length - 1].url;
       
       const response = await fetch(url);
@@ -51,11 +49,9 @@ export const offlineAudioManager = {
         }
       }
 
-      // Convert Uint8Array chunks into ArrayBuffer for the Blob
       const blob = new Blob(chunks as BlobPart[], { type: 'audio/mp4' }); // JioSaavn typically returns m4a/mp4
       await offlineSongsStore.setItem(song.id, blob);
       
-      // If it existed in auto-cache, remove it (promoted to explicit offline)
       await autoCacheStore.removeItem(song.id);
       
       return true;
@@ -69,7 +65,6 @@ export const offlineAudioManager = {
    * Silently cache a song after it finishes playing (FIFO logic)
    */
   async autoCacheSong(song: SongDetail): Promise<void> {
-    // If explicitly offline or already auto-cached, do nothing
     if (await this.isAvailableOffline(song.id) || await this.isAutoCached(song.id)) {
         return;
     }
@@ -83,10 +78,8 @@ export const offlineAudioManager = {
 
       const blob = await response.blob();
       
-      // Manage FIFO Limit
       const keys = await autoCacheStore.keys();
       if (keys.length >= MAX_AUTO_CACHE_SONGS) {
-        // localforage doesn't guarantee order, but for FIFO approximation we remove the first key returned
         const oldestKey = keys[0];
         await autoCacheStore.removeItem(oldestKey);
         console.log(`[OfflineManager] FIFO Cache limit reached. Removed: ${oldestKey}`);
@@ -105,10 +98,8 @@ export const offlineAudioManager = {
    */
   async getLocalPlaybackUrl(songId: string): Promise<string | null> {
     try {
-      // 1. Check explicit offline downloads
       let blob = await offlineSongsStore.getItem<Blob>(songId);
       
-      // 2. Check auto-cache pool
       if (!blob) {
          blob = await autoCacheStore.getItem<Blob>(songId);
       }

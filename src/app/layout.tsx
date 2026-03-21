@@ -83,7 +83,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Additional custom meta tags can go here */}
       </head>
       <body className="antialiased selection:bg-primary selection:text-black">
         <LayoutWrapper>

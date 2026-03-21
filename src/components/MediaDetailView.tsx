@@ -7,6 +7,7 @@ import { usePlayerStore } from '@/store/playerStore';
 import { useLikesStore } from '@/store/likesStore';
 import { decodeHtml } from '@/services/api';
 import { historyService } from '@/services/history';
+import { getSaavnImageUrl } from '@/utils/image';
 
 interface MediaDetailViewProps {
   data: Playlist | Album;
@@ -40,7 +41,6 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
       canvas.height = 1;
       ctx.drawImage(img, 0, 0, 1, 1);
       const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-      // Boost the color slightly for more vibrancy if it's too dark
       const factor = 0.8; 
       setDominantColor(`rgb(${r}, ${g}, ${b})`);
     };
@@ -143,7 +143,6 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
     }
     if (song.year) return `Released ${song.year}`;
     
-    // Deterministic fallback based on ID hash
     const hash = String(song.id).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const days = (hash % 300) + 2;
     if (days < 7) return `${days} days ago`;
@@ -166,22 +165,17 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
 
   return (
     <div className="min-h-full font-spotify flex flex-col relative w-full overflow-x-hidden">
-      {/* Dynamic Background Gradient (Absolute Root) */}
       <div className="absolute inset-x-0 top-0 h-[400px] md:h-[500px] z-0 transition-colors duration-1000 overflow-hidden">
-        {/* Core color layer */}
         <div 
           className="absolute inset-0 transition-colors duration-1000" 
           style={{ 
             background: `linear-gradient(to bottom, ${dominantColor} 0%, transparent 100%)`,
           }}
         />
-        {/* Bottom fade layer */}
         <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[#121212] via-transparent to-transparent" />
-        {/* Top darkness overlay for realism */}
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/40 to-transparent" />
       </div>
 
-      {/* Sticky Sub-Header (Spotify Style) */}
       <div 
         className={`sticky top-0 w-full h-[64px] z-[100] flex items-center px-6 gap-4 border-b border-white/5 transition-all duration-300 pointer-events-none md:pointer-events-auto ${isHeaderSticky ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
         style={{ 
@@ -240,11 +234,9 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
           </div>
         </header>
 
-        {/* Action Bar Background Layer for seamless blending */}
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
       </div>
 
-        {/* Action Bar */}
         <div className="flex items-center gap-6 md:gap-8 px-6 md:px-8 py-4 md:py-6 z-[110] sticky top-[64px] bg-transparent lg:static">
           <button 
             className="w-12 h-12 md:w-[56px] md:h-[56px] bg-primary rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-105 hover:bg-primary-hover active:scale-95 group" 
@@ -322,9 +314,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
             )}
           </div>
         </div>
-      {/* Song List Content */}
       <div className="flex-1 px-4 md:px-8 pb-32">
-        {/* Track List Header labels */}
         <div className="sticky top-[64px] z-[90] bg-[#121212] px-4 py-3 mb-4 border-b border-white/10 shadow-md">
           <div className="grid grid-cols-[16px_1fr_80px] md:grid-cols-[16px_4fr_2fr_80px] lg:grid-cols-[16px_4fr_3fr_2fr_80px] gap-4 text-[#b3b3b3] text-[11px] uppercase tracking-[0.1em] font-bold items-center pr-4">
             <div className="flex justify-center text-[12px]">#</div>
@@ -358,7 +348,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
                 </div>
                 <div className="flex items-center gap-3 overflow-hidden">
                   <div className="flex-shrink-0 relative overflow-hidden rounded w-10 h-10 shadow-md">
-                    <Image src={getImageUrl(song)} alt={safeString(song.name || song.title)} fill className="object-cover" />
+                    <img src={getSaavnImageUrl(getImageUrl(song), 150)} alt={safeString(song.name || song.title)} className="object-cover w-full h-full" loading="lazy" />
                   </div>
                   <div className="flex flex-col gap-0.5 overflow-hidden">
                     <div className={`text-[15px] font-bold truncate ${isCurrent ? 'text-primary' : 'text-white'}`}>{safeString(song.name || song.title)}</div>
@@ -408,17 +398,7 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
                           icon={<Image src="/assets/icons/add_to_queue.png" alt="" width={16} height={16} className="invert opacity-70" />}
                           label="Add to Queue"
                         />
-                        <MenuOption 
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            const protocol = window.location.protocol;
-                            const host = window.location.host;
-                            copyToClipboard(`${protocol}//${host}/song/${song.id}`, "Song link copied");
-                            setActiveMenuId(null);
-                          }}
-                          icon={<Image src="/assets/icons/share.png" alt="" width={16} height={16} className="invert opacity-70" />}
-                          label="Copy Song Link"
-                        />
+
                          <div className="h-[1px] bg-white/[0.05] my-1 mx-2" />
                          <MenuOption 
                           onClick={(e: any) => {
@@ -440,7 +420,6 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
         </div>
       </div>
 
-      {/* Large Image Modal */}
       {showLargeImage && (
         <div 
           className="fixed inset-0 z-[5000] flex items-center justify-center bg-black/90 backdrop-blur-md animate-in fade-in duration-300"
@@ -473,7 +452,6 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
            </div>
         </div>
       )}
-      {/* Toast Notification */}
       {showToast && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[10000] bg-primary text-black px-6 py-3 rounded-full font-bold shadow-2xl animate-in slide-in-from-bottom-4 fade-in duration-300">
            {showToast}

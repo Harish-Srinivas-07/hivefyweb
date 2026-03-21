@@ -45,7 +45,6 @@ export interface SongDetail extends MediaItem {
   lyricsId: string | null;
   copyright: string | null;
   downloadUrl: SourceUrl[];
-  // legacy/UI compatibility fields
   title?: string;
   images?: SourceUrl[];
   downloadUrls?: SourceUrl[];
@@ -58,7 +57,6 @@ export interface Album extends MediaItem {
   songCount?: number;
   songIds?: string[] | string;
   songs?: SongDetail[];
-  // legacy/UI compatibility
   title?: string;
   images?: SourceUrl[];
 }
@@ -68,7 +66,6 @@ export interface Playlist extends MediaItem {
   songs?: SongDetail[];
   artists?: ArtistMini[];
   songIds?: string[] | string;
-  // legacy/UI compatibility
   title?: string;
   images?: SourceUrl[];
 }
@@ -91,7 +88,6 @@ export interface ArtistDetails extends MediaItem {
   topAlbums?: Album[];
   singles?: Album[];
   similarArtists?: ArtistMini[];
-  // legacy/UI compatibility
   title?: string;
   images?: SourceUrl[];
 }
@@ -115,7 +111,6 @@ export interface LastQueueData {
   currentIndex: number;
 }
 
-// For backward compatibility
 export type SearchPlaylistsResponse = SearchResult<Playlist>;
 export type SearchArtistsResponse = SearchResult<ArtistMini>;
 export type Artist = ArtistMini;

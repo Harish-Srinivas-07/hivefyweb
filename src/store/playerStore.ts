@@ -14,20 +14,16 @@ interface PlayerState {
   isShuffling: boolean;
   repeatMode: RepeatMode;
   
-  // Progress/Audio State
   currentTime: number;
   duration: number;
   volume: number;
   seekTo: number | null; 
 
-  // UI state
   showQueue: boolean;
   setShowQueue: (show: boolean) => void;
 
-  // Weighted shuffle history
   recentlyPlayed: string[]; 
 
-  // Actions
   playSong: (song: SongDetail, queue: SongDetail[]) => void;
   togglePlayPause: () => void;
   setPlaying: (playing: boolean) => void;
@@ -47,7 +43,6 @@ interface PlayerState {
   addToQueue: (song: SongDetail) => void;
   addSongsToQueue: (songs: SongDetail[]) => void;
   
-  // Internal/Advanced helpers
   _applyShuffle: (current: SongDetail) => void;
   _registerPlay: (songId: string) => void;
 }
@@ -75,10 +70,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   recentlyPlayed: [],
 
   playSong: (song, queueContext) => {
-    // Determine where the song is in the provided context
     let idx = queueContext.findIndex(s => s.id === song.id);
     if (idx === -1) {
-       // Fallback if song somehow isn't in context
        queueContext = [song, ...queueContext];
        idx = 0;
     }
@@ -93,7 +86,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
     audioService.play(song);
 
-    // If shuffling is already enabled, we must instantly apply shuffle to the new context
     if (get().isShuffling) {
       get()._applyShuffle(song);
     }
@@ -121,7 +113,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (queue.length === 0) return;
 
     if (repeatMode === 'ONE') {
-      // Just re-triggerplay of current (AudioController handles the actual seek to 0)
       set({ isPlaying: true });
       return;
     }
@@ -132,7 +123,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       if (repeatMode === 'ALL') {
         nextIndex = 0;
       } else {
-        // End of queue, stop playback
         set({ isPlaying: false });
         return;
       }
@@ -159,7 +149,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         if (repeatMode === 'ALL') {
            prevIndex = queue.length - 1;
         } else {
-           // At the very beginning, just reset to 0
            prevIndex = 0;
         }
      }
@@ -200,7 +189,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   
   addToQueue: (song) => {
     const { queue, originalQueue } = get();
-    // Check if duplicate to avoid confusing user? Actually Spotify allows duplicates
     set({
       queue: [...queue, song],
       originalQueue: [...originalQueue, song]
@@ -224,10 +212,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (!currentSong || originalQueue.length === 0) return;
 
     if (newShuffle) {
-       // Enable shuffle
        get()._applyShuffle(currentSong);
     } else {
-       // Disable shuffle: restore original queue
        const origIndex = originalQueue.findIndex(s => s.id === currentSong.id);
        set({
          queue: [...originalQueue],
@@ -236,7 +222,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
-  // --- Internal Helpers matching Dart logic ---
   
   _registerPlay: (songId) => {
     set(state => {
@@ -253,14 +238,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
      const { originalQueue, recentlyPlayed } = get();
      if (originalQueue.length <= 1) return;
 
-     // Remove current from candidates so it can be forced to index 0
      const candidates = originalQueue.filter(s => s.id !== current.id);
      
-     // Separate into fresh vs recently played
      const fresh = candidates.filter(s => !recentlyPlayed.includes(s.id));
      const stale = candidates.filter(s => recentlyPlayed.includes(s.id));
 
-     // Fisher-Yates shuffle generator
      const shuffleArray = (array: SongDetail[]) => {
         const arr = [...array];
         for (let i = arr.length - 1; i > 0; i--) {
@@ -270,7 +252,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         return arr;
      };
 
-     // Fresh songs get priority, stale songs go to the end
      const shuffledTail = [...shuffleArray(fresh), ...shuffleArray(stale)];
      
      set({

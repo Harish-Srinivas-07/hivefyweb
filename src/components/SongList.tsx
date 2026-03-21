@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { SongDetail } from '@/types';
 import { usePlayerStore } from '@/store/playerStore';
+import { getSaavnImageUrl } from '@/utils/image';
 
 interface SongListProps {
   songs: SongDetail[];
@@ -23,7 +24,6 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
   const formatDuration = (dur?: string | number | null) => {
     if (!dur) return "0:00";
     
-    // If it's a string like "3:45"
     if (typeof dur === 'string' && dur.includes(':')) {
        return dur;
     }
@@ -105,7 +105,12 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
               <div className="flex items-center gap-3 md:gap-4 overflow-hidden">
                 {imageObj && (
                   <div className="flex-shrink-0 relative overflow-hidden rounded shadow-md group-hover:shadow-lg transition-all duration-300 w-10 h-10">
-                    <Image src={imageObj.url} alt={song.title || ''} fill className="object-cover transition-transform group-hover:scale-110" />
+                    <img 
+                      src={getSaavnImageUrl(imageObj.url, 150)} 
+                      alt={song.title || ''} 
+                      className="w-full h-full object-cover transition-transform group-hover:scale-110" 
+                      loading="lazy"
+                    />
                   </div>
                 )}
                 <div className="flex flex-col gap-0.5 md:gap-1 min-w-0">

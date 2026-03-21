@@ -35,7 +35,6 @@ const mapMediaItem = (item: any) => {
   if (mapped.title) mapped.title = decodeHtml(mapped.title);
   if (mapped.name) mapped.name = decodeHtml(mapped.name);
   
-  // Handle artists mapping for search results and core objects
   if (item.artists && typeof item.artists === 'object' && !item.artist) {
     const primary = item.artists.primary;
     if (Array.isArray(primary) && primary.length > 0) {
@@ -44,7 +43,6 @@ const mapMediaItem = (item: any) => {
   }
 
   if (!mapped.artist && item.subtitle) {
-     // subtitle is often "Artist1, Artist2 - Album"
      const parts = item.subtitle.split(' - ');
      mapped.artist = decodeHtml(parts[0]);
   }
@@ -57,23 +55,19 @@ const mapMediaItem = (item: any) => {
      mapped.artist = decodeHtml(item.primaryArtists);
   }
 
-  // Ensure duration is mapped correctly for ALL API structures
   const rawDuration = item.duration || item.more_info?.duration || item.moreInfo?.duration;
   if (rawDuration && !mapped.duration) {
      mapped.duration = parseInt(rawDuration, 10);
   }
 
-  // Handle downloadUrls normalization
   if (item.downloadUrl && !item.downloadUrls) {
     mapped.downloadUrls = item.downloadUrl;
   }
 
-  // Handle images normalization
   if (item.image && !item.images) {
     mapped.images = item.image;
   }
 
-  // Recursive mapping for nested songs/albums
   if (Array.isArray(item.songs)) {
     mapped.songs = item.songs.map(mapMediaItem);
   }
@@ -96,7 +90,6 @@ const mapSearchResult = (data: any) => {
   return mapped;
 };
 
-// In-memory session cache and pending promise tracking to prevent duplicate requests
 const sessionCache = new Map<string, any>();
 const pendingRequests = new Map<string, Promise<any>>();
 
@@ -105,24 +98,20 @@ export class SaavnAPI {
    * Internal helper for fetching with caching and deduplication
    */
   private static async _fetchCached<T>(cacheKey: string, fetcher: () => Promise<T | null>): Promise<T | null> {
-    // 1. Check in-memory session cache first (fastest)
     if (sessionCache.has(cacheKey)) {
       return sessionCache.get(cacheKey);
     }
 
-    // 2. Check localforage persistent cache
     const cached = await cacheService.getCache<T>(cacheKey);
     if (cached) {
       sessionCache.set(cacheKey, cached);
       return cached;
     }
 
-    // 3. Handle pending simultaneous requests
     if (pendingRequests.has(cacheKey)) {
       return pendingRequests.get(cacheKey);
     }
 
-    // 4. Perform actual fetch
     const requestPromise = (async () => {
       try {
         const result = await fetcher();
@@ -356,7 +345,6 @@ export class LatestSaavnFetcher {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
-  /// ---------------- PLAYLIST FETCHER ----------------
   static async getLatestPlaylists(
     lang: string, 
     playlistLimit = 30, 
@@ -404,7 +392,6 @@ export class LatestSaavnFetcher {
     }
   }
 
-  /// ---------------- ALBUM FETCHER ----------------
   static async getLatestAlbums(
     lang: string, 
     albumLimit = 30, 

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/api/',
     },
-    sitemap: 'https://hivefy.web.app/sitemap.xml', // Replace with actual domain if known, common for firebase
+    sitemap: 'https://hivefyweb.vercel.app/sitemap.xml',
   }
 }

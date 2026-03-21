@@ -4,10 +4,8 @@ import Image from 'next/image';
 const MobileAppBanner = () => {
   return (
     <div className="w-full relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#050505] via-[#121212] to-[#1ed760]/10 p-8 md:p-12 border border-white/5 shadow-2xl flex flex-col gap-8 group my-12 font-spotify">
-      {/* Glossy Overlay */}
       <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
-      {/* Top Section: Branding */}
       <div className="relative z-10 flex flex-col items-center md:items-start gap-4 text-center md:text-left">
         <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center transform transition-transform group-hover:scale-105">
            <Image src="/assets/icons/logo.png" alt="Hivefy" width={64} height={64} className="object-contain transition-all" />
@@ -21,7 +19,6 @@ const MobileAppBanner = () => {
         </div>
       </div>
 
-      {/* Grid: What makes it special */}
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 px-2">
          <FeatureItem emoji="🎨" text="Spotify-level UI/UX — dynamic, fluid, and designed to feel alive" />
          <FeatureItem emoji="🎧" text="Powerful player — swipe controls, transitions, and background playback" />

@@ -9,7 +9,6 @@ export default function LikedSongsPage() {
   
   const likedSongs = getLikedSongs();
 
-  // Create a mock Metadata/Playlist object that MediaDetailView can render
   const mockData: any = {
     id: 'liked',
     name: 'Liked Songs',

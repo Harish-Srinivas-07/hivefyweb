@@ -31,7 +31,6 @@ export class AudioService {
       }
     }
 
-    // Stop and unload previous
     this.stop();
 
     this.pendingSongId = song.id;
@@ -41,7 +40,6 @@ export class AudioService {
     try {
       const localUrl = await offlineAudioManager.getLocalPlaybackUrl(song.id);
       
-      // If we've switched songs during the async fetch, ignore this one
       if (this.pendingSongId !== song.id) {
         console.log('[AudioService] Skipping stale play request for:', song.id);
         return;
@@ -65,7 +63,6 @@ export class AudioService {
           this.emit('play', null);
           if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
           
-          // Sync PiP Video State
           if (typeof window !== 'undefined') {
              const { pipService } = require('./pipService');
              if (pipService) pipService.syncPlaybackState(true);
@@ -77,7 +74,6 @@ export class AudioService {
           this.emit('pause', null);
           if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
           
-          // Sync PiP Video State
           if (typeof window !== 'undefined') {
              const { pipService } = require('./pipService');
              if (pipService) pipService.syncPlaybackState(false);
@@ -185,7 +181,6 @@ export class AudioService {
       navigator.mediaSession.setActionHandler('previoustrack', () => this.emit('prev', null));
       navigator.mediaSession.setActionHandler('nexttrack', () => this.emit('next', null));
       
-      // Update position state for PiP/System UI
       this.updateMediaPositionState();
     }
   }
@@ -210,7 +205,6 @@ export class AudioService {
         artwork: artwork
       });
 
-      // Update PiP Art and Metadata if active
       if (typeof window !== 'undefined') {
          const { pipService } = require('./pipService');
          if (pipService) {
@@ -232,7 +226,6 @@ export class AudioService {
           position: this.getCurrentTime()
         });
       } catch (e) {
-        // Silently ignore if duration is not yet available
       }
     }
   }
@@ -246,7 +239,6 @@ export class AudioService {
     this.progressInterval = setInterval(() => {
       const currentTime = this.getCurrentTime();
       this.emit('progress', currentTime);
-      // Keep PiP/System UI in sync every few seconds or on significant progress
       this.updateMediaPositionState();
     }, 1000);
   }

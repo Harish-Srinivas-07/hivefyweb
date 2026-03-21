@@ -17,7 +17,6 @@ class PiPService {
   private currentIsPlaying: boolean = false;
   private docPipWindow: any = null;
 
-  // Custom high-fidelity asset from user
   private readonly nextIconBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEHklEQVR4nO2duW8VSRCHPxaBsYW0kjkCEJiMzUlZdrkDDiPOP4FLICN2/4cNuI/AAhEQknBFYETwxJFxCgdonxchjoC1wUJvtQTQaKQysixZfs+vZ6p6pj7pl9iApn/F9HRX19SA4ziO4ziO4ziOLRYCG4HDwHngDvAMqAMjwBfRiPws+92A/NlDwAZggfYgUqIL6AVOi5nfgNCmvsm/dQrYCnRqD9IaPwErgX5gNILhU+k/4AqwBZhJhZkDHACGCjB9MmXT1n65lkpNM38A7xSNn6jsWo7KtZWa7Lb/x4DhYRK9AXZRQpYBNw0YHJrUdaCHkrBNlokhMY0Ce0iYDllOhsTVL2NJinnAQwPmhUi6D3STCItk4xNKpkFgKcb5BXhtwKyQk17LGE2yGHhlwKRQwFK1x+KcP2jAnFCQXkqi0AQdJXvghib1wMrq6JwBM4KSzmibv9OACUFZOzTTC58MGBCU9VHroXzDwOCDodxRofQqDbQhCgaVZXoLoUtpvd8AVossBmGoqOPOP5XMXzPuGn4FPhswfaKO5G1+tu59q2y+5SC8z/suOGDEfMtB2EeO1QtDCnP+VFh7JmQH/TPIgdUFD2RTi9dmKQi/5RGASwUPogbMbeH6LE1HF2Ob36m0660lGoTR2A9jrY1XAO62WK9jZTraHDMA2ofrtQTvhOMxA2DhjLeWWBAexzJ/YaQq5apNR1+B+TECsNGA8SHRO2FdjAAcNmB6SDQIB2ME4LwBw0OiQYhyZDlgwOyQ6DPhVowAPDdgdEj0TngaIwApFFvVjAYhS162zbABg0OiQfgQIwBfDJgbEg3C/x6AEgTApyB0pyB/CKP7EPZlKLrLUN+IobsR81QEuqkIT8ahm4zzdDS66eis344fyDCtA5ns1a0o+JEkLesREcmaHbn5tKRjMQOwVXEgdxOadqZb2TclXpiFbmFWhpcm0rQukAO/FzyITQlOO2NalVd5er3AQTQSLU//O6/ydK0XNNYmMu2MaS8lfEVpbSLmvyuiA+NRhYE1JgTBovmZ+iiALqXOhw3jr6nWi+zKq7Uxaxg1P/rGqxm8VQE/dBUFeqRRRai4RjR7yW0xlKoOCsrGvh1lzhgwIijpJAbokL6aoWK6B8zGCD9LCUaoiF5YbORapbaVSzFKFRq3LieB1sVlnI4GgSUkQrf01QwleuB2kxizgL9KsE/ot7TamW6fiVQ/4LCbktCTWO7omuWVTrupC83PVoUmUsqFZzWLpku6C741YPj4tX1f1b6y1yEfUasr/4/fZ6ULuiYrpCfRvwWYnhWYXZbK5dyqF1KlUzpNnQCeSIVxu4Z/ld49x2V+r9RnC9tlPrBeXnQ4C9yWwNTl7c2xz9kOy8+eyGtBZ+XvrIvVs8dxHMdxHMdxHIdIfAeZROwvT5syewAAAABJRU5ErkJggg==";
 
   private constructor() {
@@ -99,7 +98,6 @@ class PiPService {
           ctx.fillStyle = '#121212';
           ctx.fillRect(0, 0, 1280, 720);
 
-          // Downsized Artwork for Mini Feel
           const artSize = 480;
           ctx.save();
           ctx.beginPath();
@@ -108,7 +106,6 @@ class PiPService {
           ctx.drawImage(img, 80, 120, artSize, artSize);
           ctx.restore();
 
-          // Downsized Typography
           ctx.textAlign = 'left';
           ctx.fillStyle = '#FFFFFF';
           ctx.font = 'bold 64px "Inter", "Segoe UI", Roboto, sans-serif';
@@ -118,7 +115,6 @@ class PiPService {
           ctx.font = '500 36px "Inter", "Segoe UI", Roboto, sans-serif';
           ctx.fillText(this.currentArtist || 'Unknown Artist', 600, 400);
 
-          // Status indicator
           ctx.fillStyle = this.currentIsPlaying ? '#1db954' : '#404040';
           ctx.font = '900 30px "Inter"';
           ctx.fillText(this.currentIsPlaying ? 'DISCOVERING' : 'PAUSED', 600, 480);
@@ -141,7 +137,6 @@ class PiPService {
     const doc = this.docPipWindow.document;
     const body = doc.body;
     
-    // Play/Pause high-fidelity SVGs
     const playSvg = `<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"/></svg>`;
     const pauseSvg = `<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm7 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"/></svg>`;
 

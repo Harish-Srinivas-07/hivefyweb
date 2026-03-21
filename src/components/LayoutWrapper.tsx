@@ -28,7 +28,6 @@ export default function LayoutWrapper({
 
   return (
     <div className="flex flex-col h-screen bg-bg-base font-spotify">
-      {/* Desktop Grid Layout */}
       <div 
         className="hidden md:grid h-full w-full gap-2 p-2 overflow-hidden bg-black"
         style={{
@@ -71,7 +70,6 @@ export default function LayoutWrapper({
         )}
       </div>
 
-      {/* Mobile Layout Wrapper */}
       <div className="flex md:hidden flex-col h-full overflow-hidden relative">
         <header className="sticky top-0 z-10 flex items-center px-4 backdrop-blur-md bg-black/50 h-[64px] border-b border-white/5">
           <TopBar />
@@ -84,7 +82,6 @@ export default function LayoutWrapper({
         </main>
 
         <div className="fixed bottom-0 left-0 right-0 z-[3000] flex flex-col pointer-events-none">
-          {/* Mobile Floating Player */}
           {currentSong && (
             <div className="px-2 mb-2 pointer-events-auto">
               <div className="bg-[#181818]/95 backdrop-blur-2xl rounded-xl p-2.5 border border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.6)] flex items-center gap-3 active:scale-[0.99] transition-transform">
@@ -99,7 +96,6 @@ export default function LayoutWrapper({
         </div>
       </div>
       
-      {/* Fallback styling for images to ensure transparency */}
       <style jsx global>{`
         img[src*="logo.png"], 
         .logo-img,

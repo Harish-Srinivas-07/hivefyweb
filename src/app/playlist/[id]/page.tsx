@@ -6,11 +6,9 @@ export default async function PlaylistPage({ params }: { params: Promise<{ id: s
   const { id } = await params;
   console.log(`[PlaylistPage] Fetching playlist ID: ${id}`);
   
-  // Initial fetch to get metadata and count
   let playlist = await SaavnAPI.fetchPlaylistById(id);
   
   if (playlist && playlist.songCount && playlist.songCount > (playlist.songs?.length || 0)) {
-    // Re-fetch with exact song count if more songs exist
     playlist = await SaavnAPI.fetchPlaylistById(id, undefined, 0, Number(playlist.songCount));
   }
   

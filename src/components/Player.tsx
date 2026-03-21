@@ -6,6 +6,7 @@ import { usePlayerStore } from '@/store/playerStore';
 import { useLikesStore } from '@/store/likesStore';
 import { pipService } from '@/services/pipService';
 import { decodeHtml } from '@/services/api';
+import { getSaavnImageUrl } from '@/utils/image';
 
 const Player = () => {
   const { 
@@ -82,14 +83,12 @@ const Player = () => {
   return (
     <div className="flex items-center justify-between w-full h-full font-spotify px-2 md:px-0">
       
-      {/* Current Song Info */}
       <div className="flex items-center gap-2 md:gap-4 flex-1 md:flex-none min-w-0">
         <div className="relative flex-shrink-0 group overflow-hidden rounded-md shadow-lg w-10 h-10 md:w-[52px] md:h-[52px]">
-          <Image 
-            src={highestResImage} 
+          <img 
+            src={getSaavnImageUrl(highestResImage, 500)} 
             alt={currentSong.title || (currentSong as any).name || 'Album Art'} 
-            fill
-            className="transition-transform duration-500 group-hover:scale-110 object-cover" 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
           />
         </div>
         <div className="flex flex-col gap-0.5 min-w-0 flex-1">
@@ -112,7 +111,6 @@ const Player = () => {
         </button>
       </div>
 
-      {/* Main Player Controls */}
       <div className="flex-none md:flex-1 flex flex-col items-center gap-1.5 px-2">
         <div className="flex items-center gap-3 md:gap-8">
           <button 
@@ -178,7 +176,6 @@ const Player = () => {
           </button>
         </div>
 
-        {/* Progress Bar Container: Hidden on Mobile */}
         <div className="hidden md:flex items-center gap-2 w-full max-w-[500px]">
           <span className="text-[11px] text-text-subdued min-w-[32px] text-right">{formatTime(currentTime)}</span>
           <div 
@@ -203,7 +200,6 @@ const Player = () => {
         </div>
       </div>
 
-      {/* Control Tools - Hidden on Mobile */}
       <div className="hidden md:flex items-center gap-1.5 md:gap-3 w-[180px] md:w-[220px] lg:w-[260px] justify-end">
         <button 
           onClick={() => setShowQueue(!showQueue)}
@@ -224,7 +220,6 @@ const Player = () => {
           </div>
         </button>
         
-        {/* Mini Player (PiP) */}
         <button 
           onClick={async () => {
             if (currentSong && pipService) {
@@ -264,7 +259,6 @@ const Player = () => {
                 style={{ width: `${volume * 100}%` }}
               />
             </div>
-            {/* Volume Dot */}
             <div 
               className="absolute w-3 h-3 bg-white rounded-full shadow-lg transition-transform group-hover/vol-prog:scale-125 pointer-events-none"
               style={{ left: `calc(${volume * 100}% - 6px)` }}

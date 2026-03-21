@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { usePlayerStore } from '@/store/playerStore';
 import { decodeHtml } from '@/services/api';
+import { getSaavnImageUrl } from '@/utils/image';
 
 const QueuePanel = () => {
   const { queue, currentIndex, currentSong, playSong, setShowQueue, isPlaying } = usePlayerStore();
@@ -45,7 +46,7 @@ const QueuePanel = () => {
             <h3 className="text-sm font-bold text-text-subdued mb-3 uppercase tracking-wider">Now Playing</h3>
             <div className="flex items-center gap-4 p-2 rounded-lg bg-white/5 shadow-inner">
                <div className="w-12 h-12 relative flex-shrink-0 rounded overflow-hidden shadow-lg">
-                  <Image src={currentSong.image?.[currentSong.image.length-1]?.url || '/assets/icons/logo.png'} alt="" fill className="object-cover" />
+                  <img src={getSaavnImageUrl(currentSong.image?.[currentSong.image.length-1]?.url || '/assets/icons/logo.png', 150)} alt="" className="w-full h-full object-cover" loading="lazy" />
                   {isPlaying && (
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                        <Image src="/assets/icons/player.gif" alt="" width={16} height={16} className="invert" unoptimized />
@@ -71,7 +72,7 @@ const QueuePanel = () => {
                   className="flex items-center gap-4 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-all group"
                 >
                   <div className="w-10 h-10 relative flex-shrink-0 rounded overflow-hidden grayscale group-hover:grayscale-0 transition-all">
-                    <Image src={song.image?.[song.image.length-1]?.url || '/assets/icons/logo.png'} alt="" fill className="object-cover" />
+                    <img src={getSaavnImageUrl(song.image?.[song.image.length-1]?.url || '/assets/icons/logo.png', 150)} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-bold text-white truncate group-hover:text-primary transition-colors">{decodeHtml(song.title || (song as any).name)}</div>

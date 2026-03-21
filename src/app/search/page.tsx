@@ -3,6 +3,7 @@ import { SaavnAPI, decodeHtml } from '@/services/api';
 import SongList from '@/components/SongList';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getSaavnImageUrl } from '@/utils/image';
 
 interface SearchPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -25,7 +26,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     );
   }
 
-  // Fetch from the search API endpoint using the global search for all media types
   const [searchResults, searchSongsResult] = await Promise.all([
     SaavnAPI.globalSearch(query),
     SaavnAPI.searchSongs(query, 0, 20)
@@ -35,8 +35,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const albums = searchResults?.albums?.results || [];
   const playlists = searchResults?.playlists?.results || [];
 
-  // Combine global top songs with deeper song search results, deduplicating by ID
-  // Prioritize deeper search results as they often have better metadata (like duration)
   const songMap = new Map();
   searchSongsResult.forEach(s => songMap.set(s.id, s));
   globalSongs.forEach(s => {
@@ -65,7 +63,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                <Link key={album.id} href={`/album/${album.id}`}>
                  <div className="h-full p-4 transition-colors rounded-lg cursor-pointer bg-[#181818] hover:bg-[#282828] group">
                    <div className="relative w-full mb-4 overflow-hidden shadow-2xl aspect-square rounded">
-                    <Image src={album.images?.[album.images.length-1]?.url || '/assets/icons/disc.png'} alt={album.title} width={180} height={180} className="object-cover w-full h-full" />
+                    <img src={getSaavnImageUrl(album.images?.[album.images.length-1]?.url || '/assets/icons/disc.png', 150)} alt={album.title} className="object-cover w-full h-full" width={180} height={180} loading="lazy" />
                    </div>
                    <div className="mb-1 text-base font-bold text-white truncate">{album.title || album.name}</div>
                    <div className="text-sm text-[#a7a7a7] truncate">{album.year || album.artist || 'Album'}</div>
@@ -84,7 +82,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                <Link key={playlist.id} href={`/playlist/${playlist.id}`}>
                  <div className="h-full p-4 transition-colors rounded-lg cursor-pointer bg-[#181818] hover:bg-[#282828] group">
                    <div className="relative w-full mb-4 overflow-hidden shadow-2xl aspect-square rounded">
-                    <Image src={playlist.images?.[playlist.images.length-1]?.url || '/assets/icons/playlist.png'} alt={playlist.title} width={180} height={180} className="object-cover w-full h-full" />
+                    <img src={getSaavnImageUrl(playlist.images?.[playlist.images.length-1]?.url || '/assets/icons/playlist.png', 150)} alt={playlist.title} className="object-cover w-full h-full" width={180} height={180} loading="lazy" />
                    </div>
                    <div className="mb-1 text-base font-bold text-white truncate">{playlist.title || playlist.name}</div>
                    <div className="text-sm text-[#a7a7a7] truncate">{playlist.artist || 'Playlist'}</div>

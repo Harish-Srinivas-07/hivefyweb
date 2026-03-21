@@ -43,7 +43,6 @@ const Sidebar = () => {
         const likedAlbums = getLikedAlbums();
         const likedPlaylists = getLikedPlaylists();
         
-        // Start with Liked items at the top
         let items: any[] = [
           ...likedPlaylists.map(p => ({ ...p, libType: 'playlist', isLiked: true })),
           ...likedAlbums.map(a => ({ ...a, libType: 'album', isLiked: true }))
@@ -105,7 +104,6 @@ const Sidebar = () => {
     fetchLibrary();
   }, [pathname, language, likedItems]);
 
-  // Filtering and Sorting
   const filteredItems = libraryItems
     .filter(item => {
       const title = (item.name || item.title || '').toLowerCase();
@@ -123,7 +121,6 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col h-full gap-2 font-spotify">
-      {/* Library Box */}
       <div className="flex flex-col flex-1 overflow-hidden rounded-xl bg-surface-base">
         <header className="px-5 pt-5 pb-2">
           <div className="flex items-center justify-between mb-4">
@@ -140,7 +137,6 @@ const Sidebar = () => {
           </div>
         </header>
 
-        {/* Search and Sort Sub-header */}
         <div className="flex items-center justify-between px-4 pb-2">
           <div className={`flex items-center transition-all duration-300 rounded-full h-8 overflow-hidden ${isSearchOpen ? 'bg-white/10 w-full mr-2' : 'w-8 hover:bg-white/5'}`}>
             <button 

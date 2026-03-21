@@ -30,7 +30,6 @@ const MainContent: React.FC<MainContentProps> = ({
   const [activeCategory, setActiveCategory] = React.useState<{ title: string, items: any[], type: 'playlist' | 'album' | 'artist' } | null>(null);
 
   React.useEffect(() => {
-    // When category changes, scroll the main content area to top
     const scrollContainer = document.querySelector('main > div');
     if (scrollContainer) {
       scrollContainer.scrollTo({ top: 0, behavior: 'instant' });
@@ -97,11 +96,9 @@ const MainContent: React.FC<MainContentProps> = ({
 
   return (
     <div className="relative font-spotify min-h-screen">
-      {/* Top Gradient Overlay */}
       <div className="absolute top-[-80px] left-[-32px] right-[-32px] h-[340px] bg-gradient-to-b from-[#1e0a4d]/60 via-[#121212]/80 to-[#121212] pointer-events-none z-0" />
 
       <div className="relative z-10 pt-4 px-4 md:px-8 mt-10">
-        {/* Featured Grid (4 Columns on Desktop, 2 on Mobile) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-2 md:gap-x-4 gap-y-1.5 md:gap-y-3 mb-8">
           <Link href="/playlist/liked">
             <FeaturedCard title="Liked Songs" image="/assets/icons/heart.png" special />
@@ -120,7 +117,6 @@ const MainContent: React.FC<MainContentProps> = ({
            <MobileAppBanner />
         </div>
 
-        {/* Dynamic Sections */}
         {topLatest.length > 0 && (
           <Section title="Made For You" items={topLatest} type="playlist" onShowAll={() => setActiveCategory({ title: "Made For You", items: topLatest, type: 'playlist' })} />
         )}

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useLikesStore } from '@/store/likesStore';
 import { historyService } from '@/services/history';
 import { decodeHtml } from '@/services/api';
+import { getSaavnImageUrl } from '@/utils/image';
 
 export default function LibraryPage() {
   const { getLikedSongs } = useLikesStore();
@@ -43,7 +44,6 @@ export default function LibraryPage() {
       </header>
 
       <div className="flex flex-col gap-6">
-        {/* Liked Songs Tile */}
         <Link href="/playlist/liked" className="group">
           <div className="flex items-center gap-4 p-3 rounded-xl bg-white/[0.03] border border-white/5 active:scale-[0.98] transition-transform">
             <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#450af5] to-[#c4efd9] flex items-center justify-center relative overflow-hidden">
@@ -60,7 +60,6 @@ export default function LibraryPage() {
           </div>
         </Link>
 
-        {/* History / Recent Sections */}
         <div className="space-y-4">
           <h3 className="text-xs font-black uppercase tracking-[0.2em] text-text-subdued px-2">Recently Visited</h3>
           
@@ -86,11 +85,11 @@ export default function LibraryPage() {
               {items.map((item, idx) => (
                 <Link key={`${item.id}-${idx}`} href={`/${item.type}/${item.id}`} className="flex items-center gap-4 p-2.5 rounded-xl hover:bg-white/5 active:bg-white/10 transition-colors">
                   <div className={`relative flex-shrink-0 w-14 h-14 shadow-xl ${item.type === 'album' ? 'rounded-md' : 'rounded-full overflow-hidden'}`}>
-                    <Image 
-                      src={item.images?.[0]?.url || item.image?.[0]?.url || item.images?.[0]?.link || '/assets/icons/disc.png'} 
+                    <img 
+                      src={getSaavnImageUrl(item.images?.[0]?.url || item.image?.[0]?.url || item.images?.[0]?.link || '/assets/icons/disc.png', 150)} 
                       alt={item.name} 
-                      fill 
-                      className="object-cover"
+                      className="object-cover w-full h-full"
+                      loading="lazy"
                     />
                   </div>
                   <div className="flex flex-col gap-0.5">

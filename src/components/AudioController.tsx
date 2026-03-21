@@ -16,7 +16,6 @@ export default function AudioController() {
   } = usePlayerStore();
 
   useEffect(() => {
-    // Sync Events
     const offProgress = audioService.on('progress', (time: number) => setProgress(time));
     const offLoad = audioService.on('load', (duration: number) => setDuration(duration));
     const offPlay = audioService.on('play', () => setPlaying(true));
@@ -40,7 +39,6 @@ export default function AudioController() {
     };
   }, [currentSong, setProgress, setDuration, setPlaying, nextSong]);
 
-  // Handle Media Session Metadata
   useEffect(() => {
     if (!currentSong) return;
 

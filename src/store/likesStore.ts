@@ -13,7 +13,6 @@ interface LikedItem {
 interface LikesState {
   likedItems: Record<string, LikedItem>; // Keyed by ID for O(1) lookups
   
-  // Actions
   toggleLike: (item: any, type: 'song' | 'album' | 'playlist') => void;
   isLiked: (id: string) => boolean;
   getLikedSongs: () => LikedItem[];
@@ -33,7 +32,6 @@ export const useLikesStore = create<LikesState>()(
         if (currentLikes[id]) {
           delete currentLikes[id];
         } else {
-          // Extract basic info for the persistent store
           let name = item.title || item.name || 'Unknown';
           let image = '/assets/icons/logo.png';
           if (Array.isArray(item.images) && item.images.length > 0) {

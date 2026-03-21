@@ -7,7 +7,6 @@ export default async function Home() {
   const cookieStore = await cookies();
   const language = (cookieStore.get('music-language')?.value as MusicLanguage) || 'tamil';
 
-  // Fetch required data directly in the server component
   const [
     latestPlaylists,
     albums,

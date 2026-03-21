@@ -37,7 +37,6 @@ export const historyService = {
         timestamp: Date.now()
       };
 
-      // Get existing history
       const existing = await this.getHistory();
       const filtered = existing.filter(i => i.id !== item.id);
       

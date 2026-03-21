@@ -1,6 +1,5 @@
 import localforage from 'localforage';
 
-// Configure the localforage instance for API caching ONLY in the browser
 const IS_BROWSER = typeof window !== 'undefined';
 
 const apiCacheStore = IS_BROWSER ? localforage.createInstance({
@@ -47,7 +46,6 @@ export const cacheService = {
       const ageSeconds = (now - entry.timestamp) / 1000;
 
       if (ageSeconds > entry.ttlSeconds) {
-        // Cache expired
         await this.removeCache(key);
         return null;
       }

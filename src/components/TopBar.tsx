@@ -168,7 +168,6 @@ const LanguageMenu = () => {
                   onClick={() => {
                     setLanguage(lang);
                     setIsOpen(false);
-                    // Set cookie for Server Component sync
                     document.cookie = `music-language=${lang}; path=/; max-age=31536000`;
                     window.location.reload();
                   }}
@@ -285,7 +284,6 @@ export default function TopBar() {
 
   return (
     <div className="flex-1 flex items-center justify-between gap-3 md:gap-4 h-full pointer-events-auto">
-      {/* Left Area: Profile & Nav Buttons */}
       {(!isSearchPage || !isHomePage) && (
         <div className={`flex items-center gap-2 md:gap-4 ${isSearchPage ? 'hidden md:flex' : 'flex'}`}>
           <ProfileMenu />
@@ -305,14 +303,12 @@ export default function TopBar() {
         </div>
       )}
 
-      {/* Center: Clean Search bar */}
       <div className={`flex-1 flex justify-center max-w-[600px] ${isHomePage ? 'hidden md:flex' : 'flex'}`}>
         <Suspense fallback={<div className="w-full h-11 bg-[#2a2a2a] rounded-full animate-pulse" />}>
            <SearchInput />
         </Suspense>
       </div>
 
-      {/* Right Actions */}
       <div className={`flex items-center gap-2 md:gap-4 shrink-0 ${isSearchPage ? 'hidden md:flex' : 'flex'}`}>
         <LanguageMenu />
         
