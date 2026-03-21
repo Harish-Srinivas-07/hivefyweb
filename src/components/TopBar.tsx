@@ -214,19 +214,33 @@ const ProfileMenu = () => {
 
       {isOpen && (
         <div className="absolute top-[calc(100%+12px)] left-0 w-48 md:w-56 bg-black/90 md:bg-[#282828] rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.8)] border border-white/[0.05] py-1 z-[4000] animate-in fade-in zoom-in duration-150">
-           <div className="px-4 py-3 border-b border-white/[0.05] mb-1">
+            <div className="px-4 py-3 border-b border-white/[0.05] mb-1">
               <p className="text-white text-[15px] font-black tracking-tight truncate">Harish Srinivas</p>
               <p className="text-text-subdued text-[10px] font-black uppercase tracking-[0.15em] mt-0.5">Software Developer</p>
-           </div>
-           
-           <ProfileLink href="https://harishsrinivas.netlify.app" label="Portfolio" external />
-           <ProfileLink href="https://github.com/Harish-Srinivas-07" label="GitHub" external />
-           <ProfileLink href="https://linkedin.com/in/harishsrinivas-sr" label="LinkedIn" external />
-           
-           <div className="h-[1px] bg-white/[0.05] my-1 mx-3" />
-           <div className="px-4 pt-2 pb-1 opacity-30">
-              <span className="text-[9px] font-black uppercase tracking-widest text-white">Hivefy &copy; 2026</span>
-           </div>
+            </div>
+            
+            <ProfileLink href="https://github.com/Harish-Srinivas-07/hivefy" label="Hivefy for Android" external />
+            <ProfileLink href="https://github.com/Harish-Srinivas-07/hivefyweb" label="Star on GitHub" external />
+            <ProfileLink href="https://harishsrinivas.netlify.app" label="Portfolio" external />
+            
+            <div className="h-[1px] bg-white/[0.05] my-1 mx-3" />
+            <div className="px-4 pt-2 pb-2">
+               <a 
+                 href="https://github.com/Harish-Srinivas-07/hivefy/releases/latest" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="flex items-center justify-center gap-2 w-full py-2 bg-[#3DDC84] rounded-full text-black font-black text-[11px] uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg"
+               >
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                   <path d="M17.523 15.3414L20.355 20.2479C20.505 20.5049 20.418 20.8289 20.161 20.9789C19.904 21.1289 19.58 21.0419 19.43 20.7849L16.554 15.8049C15.111 16.4529 13.485 16.8249 11.75 16.8249C10.015 16.8249 8.389 16.4529 6.946 15.8049L4.07 20.7849C3.92 21.0419 3.596 21.1289 3.339 20.9789C3.082 20.8289 2.995 20.5049 3.145 20.2479L5.977 15.3414C2.553 13.4814 0.22 10.0194 0 5.92441H23.5C23.28 10.0194 20.947 13.4814 17.523 15.3414ZM7.045 10.4634C7.045 10.9714 7.458 11.3854 7.965 11.3854C8.472 11.3854 8.885 10.9714 8.885 10.4634C8.885 9.95541 8.472 9.54141 7.965 9.54141C7.458 9.54141 7.045 9.95541 7.045 10.4634ZM16.415 11.3854C16.922 11.3854 17.335 10.9714 17.335 10.4634C17.335 9.95541 16.922 9.54141 16.415 9.54141C15.908 9.54141 15.495 9.95541 15.495 10.4634C15.495 10.9714 15.908 11.3854 16.415 11.3854Z" />
+                 </svg>
+                 Android App
+               </a>
+            </div>
+            <div className="h-[1px] bg-white/[0.05] my-1 mx-3" />
+            <div className="px-4 pb-2 opacity-30 text-center">
+               <span className="text-[9px] font-black uppercase tracking-widest text-white">Hivefy &copy; 2026</span>
+            </div>
         </div>
       )}
     </div>
