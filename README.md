@@ -30,23 +30,31 @@
 
 Experience high-performance music streaming with trending charts, albums, and playlists — all **open-source, privacy-respecting, and cross-platform**. 🎵
 
-> [!TIP]
-> **Wanna try the Android version?**  
-> Check out the native Flutter app here: [Hivefy for Android](https://github.com/Harish-Srinivas-07/hivefy)
+## 🔗 Ecosystem
+
+Hivefy is now a **multi-platform open-source music ecosystem**:
+
+- 🌐 **Web (Next.js)** — You’re here → fast, install-free experience
+- 📱 **Android (Flutter)** — Native app with offline downloads
+
+👉 **Android Repo:** https://github.com/Harish-Srinivas-07/hivefy
+👉 **Download App:** https://github.com/Harish-Srinivas-07/hivefy/releases
+
+> Use Hivefy anywhere — browser or mobile, same philosophy: **ad-free, privacy-first music**.
 
 <h3>Download Android App 😍</h3>
 
 <!-- GitHub button -->
 <p>
   <a href="https://github.com/Harish-Srinivas-07/hivefy/releases" target="_blank">
-    <img alt="Github build" src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="60" style="vertical-align: middle;" />
+    <img alt="Github build" src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="60" width="200" style="vertical-align: middle;" />
   </a>
 </p>
 
 <!-- SourceForge button -->
 <p>
   <a href="https://sourceforge.net/projects/hivefy/" target="_blank">
-    <img alt="Download Hivefy" src="https://a.fsdn.com/con/app/sf-download-button" height="40" style="vertical-align: middle;" />
+    <img alt="Download Hivefy" src="https://a.fsdn.com/con/app/sf-download-button" height="40" width="250" style="vertical-align: middle;" />
   </a>
 </p>
 
