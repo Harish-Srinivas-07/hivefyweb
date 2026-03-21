@@ -89,6 +89,9 @@ const Player = () => {
             src={getSaavnImageUrl(highestResImage, 500)} 
             alt={currentSong.title || (currentSong as any).name || 'Album Art'} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+            decoding="async"
+            width={52}
+            height={52}
           />
         </div>
         <div className="flex flex-col gap-0.5 min-w-0 flex-1">

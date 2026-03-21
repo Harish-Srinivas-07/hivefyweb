@@ -63,7 +63,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                <Link key={album.id} href={`/album/${album.id}`}>
                  <div className="h-full p-4 transition-colors rounded-lg cursor-pointer bg-[#181818] hover:bg-[#282828] group">
                    <div className="relative w-full mb-4 overflow-hidden shadow-2xl aspect-square rounded">
-                    <img src={getSaavnImageUrl(album.images?.[album.images.length-1]?.url || '/assets/icons/disc.png', 150)} alt={album.title} className="object-cover w-full h-full" width={180} height={180} loading="lazy" />
+                    <img src={getSaavnImageUrl(album.images?.[album.images.length-1]?.url || '/assets/icons/disc.png', 150)} alt={album.title} className="object-cover w-full h-full" width={180} height={180} loading="lazy" decoding="async" />
                    </div>
                    <div className="mb-1 text-base font-bold text-white truncate">{album.title || album.name}</div>
                    <div className="text-sm text-[#a7a7a7] truncate">{album.year || album.artist || 'Album'}</div>
@@ -82,7 +82,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                <Link key={playlist.id} href={`/playlist/${playlist.id}`}>
                  <div className="h-full p-4 transition-colors rounded-lg cursor-pointer bg-[#181818] hover:bg-[#282828] group">
                    <div className="relative w-full mb-4 overflow-hidden shadow-2xl aspect-square rounded">
-                    <img src={getSaavnImageUrl(playlist.images?.[playlist.images.length-1]?.url || '/assets/icons/playlist.png', 150)} alt={playlist.title} className="object-cover w-full h-full" width={180} height={180} loading="lazy" />
+                    <img src={getSaavnImageUrl(playlist.images?.[playlist.images.length-1]?.url || '/assets/icons/playlist.png', 150)} alt={playlist.title} className="object-cover w-full h-full" width={180} height={180} loading="lazy" decoding="async" />
                    </div>
                    <div className="mb-1 text-base font-bold text-white truncate">{playlist.title || playlist.name}</div>
                    <div className="text-sm text-[#a7a7a7] truncate">{playlist.artist || 'Playlist'}</div>

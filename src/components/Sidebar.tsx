@@ -8,6 +8,7 @@ import { SaavnAPI, LatestSaavnFetcher, decodeHtml } from '@/services/api';
 import { historyService } from '@/services/history';
 import { useLikesStore } from '@/store/likesStore';
 import { useLanguageStore } from '@/store/languageStore';
+import { getSaavnImageUrl } from '@/utils/image';
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -259,12 +260,24 @@ const LibraryItem = ({ title, subtitle, image, pinned, active, href = '#', isRem
   const content = (
     <div className={`group flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200 ${active ? 'bg-white/10 shadow-sm' : 'hover:bg-white/5'}`}>
       <div className={`flex items-center justify-center w-12 h-12 overflow-hidden rounded-md ${pinned ? 'bg-gradient-to-br from-[#450af5] to-[#c4efd9]' : 'bg-bg-highlight'} shadow-md transition-transform group-hover:scale-105 relative`}>
-        <Image 
-          src={image} 
-          alt={title} 
-          fill
-          className={`object-cover transition-all ${pinned ? 'p-2.5 invert brightness-110' : (isRemote ? 'opacity-100' : 'p-2.5 invert opacity-90 group-hover:opacity-100')}`} 
-        />
+        {isRemote ? (
+          <img 
+            src={getSaavnImageUrl(image, 150)} 
+            alt={title} 
+            className="w-full h-full object-cover transition-all" 
+            loading="lazy"
+            decoding="async"
+            width={48}
+            height={48}
+          />
+        ) : (
+          <Image 
+            src={image} 
+            alt={title} 
+            fill
+            className={`object-cover transition-all ${pinned ? 'p-2.5 invert brightness-110' : 'p-2.5 invert opacity-90 group-hover:opacity-100'}`} 
+          />
+        )}
       </div>
       <div className="flex flex-col flex-1 gap-1 min-w-0">
         <div className="flex items-center gap-2">

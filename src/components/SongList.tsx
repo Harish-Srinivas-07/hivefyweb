@@ -105,12 +105,15 @@ export default function SongList({ songs, onSongClick }: SongListProps) {
               <div className="flex items-center gap-3 md:gap-4 overflow-hidden">
                 {imageObj && (
                   <div className="flex-shrink-0 relative overflow-hidden rounded shadow-md group-hover:shadow-lg transition-all duration-300 w-10 h-10">
-                    <img 
-                      src={getSaavnImageUrl(imageObj.url, 150)} 
-                      alt={song.title || ''} 
-                      className="w-full h-full object-cover transition-transform group-hover:scale-110" 
-                      loading="lazy"
-                    />
+                      <img 
+                        src={getSaavnImageUrl(imageObj.url, 150)} 
+                        alt={song.title || ''} 
+                        className="w-full h-full object-cover transition-transform group-hover:scale-110" 
+                        loading="lazy"
+                        decoding="async"
+                        width={40}
+                        height={40}
+                      />
                   </div>
                 )}
                 <div className="flex flex-col gap-0.5 md:gap-1 min-w-0">

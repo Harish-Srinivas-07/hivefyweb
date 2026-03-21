@@ -90,6 +90,9 @@ export default function LibraryPage() {
                       alt={item.name} 
                       className="object-cover w-full h-full"
                       loading="lazy"
+                      decoding="async"
+                      width={56}
+                      height={56}
                     />
                   </div>
                   <div className="flex flex-col gap-0.5">

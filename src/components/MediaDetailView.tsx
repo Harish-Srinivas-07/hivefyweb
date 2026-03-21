@@ -203,12 +203,12 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
             className="flex-shrink-0 group relative cursor-pointer active:scale-95 transition-transform duration-300 shadow-[0_32px_64px_rgba(0,0,0,0.6)]"
             onClick={() => setShowLargeImage(true)}
           >
-            <div className="w-[192px] h-[192px] md:w-[232px] md:h-[232px] relative overflow-hidden rounded-md">
-              <Image 
-                src={getImageUrl(data)} 
+            <div className="w-[192px] h-[192px] md:w-[232px] md:h-[232px] relative overflow-hidden rounded-md flex items-center justify-center">
+              <img 
+                src={getSaavnImageUrl(getImageUrl(data), 500)} 
                 alt={safeString(data.name || data.title)} 
-                fill
-                className="object-cover transition-all duration-500" 
+                className="w-full h-full object-cover transition-all duration-500" 
+                decoding="async"
               />
             </div>
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-md flex items-center justify-center">
@@ -348,7 +348,15 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
                 </div>
                 <div className="flex items-center gap-3 overflow-hidden">
                   <div className="flex-shrink-0 relative overflow-hidden rounded w-10 h-10 shadow-md">
-                    <img src={getSaavnImageUrl(getImageUrl(song), 150)} alt={safeString(song.name || song.title)} className="object-cover w-full h-full" loading="lazy" />
+                    <img 
+                      src={getSaavnImageUrl(getImageUrl(song), 150)} 
+                      alt={safeString(song.name || song.title)} 
+                      className="object-cover w-full h-full" 
+                      loading="lazy" 
+                      decoding="async"
+                      width={40}
+                      height={40}
+                    />
                   </div>
                   <div className="flex flex-col gap-0.5 overflow-hidden">
                     <div className={`text-[15px] font-bold truncate ${isCurrent ? 'text-primary' : 'text-white'}`}>{safeString(song.name || song.title)}</div>
@@ -429,12 +437,12 @@ export default function MediaDetailView({ data, type }: MediaDetailViewProps) {
             className="flex flex-col items-center gap-6 max-w-[90vw] transition-all duration-500 animate-in zoom-in-95 fill-mode-forwards ease-out"
             onClick={(e) => e.stopPropagation()}
            >
-              <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] overflow-hidden rounded-lg shadow-[0_32px_64px_rgba(0,0,0,0.8)]">
-                <Image 
-                  src={getImageUrl(data)} 
+              <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] overflow-hidden rounded-lg shadow-[0_32px_64px_rgba(0,0,0,0.8)] flex items-center justify-center">
+                <img 
+                  src={getSaavnImageUrl(getImageUrl(data), 500)} 
                   alt={safeString(data.name || data.title)} 
-                  fill 
-                  className="object-cover" 
+                  className="w-full h-full object-cover" 
+                  decoding="async"
                 />
               </div>
               
