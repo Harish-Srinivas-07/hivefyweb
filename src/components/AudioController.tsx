@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { usePlayerStore } from '@/store/playerStore';
 import { audioService } from '@/services/AudioService';
-import { offlineAudioManager } from '@/services/offlineAudioManager';
 import { SourceUrl } from '@/types';
 
 export default function AudioController() {
@@ -21,7 +20,6 @@ export default function AudioController() {
     const offPlay = audioService.on('play', () => setPlaying(true));
     const offPause = audioService.on('pause', () => setPlaying(false));
     const offEnd = audioService.on('end', () => {
-      if (currentSong) offlineAudioManager.autoCacheSong(currentSong);
       nextSong();
     });
     const offError = audioService.on('error', (err: any) => {
