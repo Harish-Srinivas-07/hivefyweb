@@ -48,17 +48,15 @@ export class AudioService {
       
       if (localUrl) {
         src = localUrl;
-      } else if (song.downloadUrls && song.downloadUrls.length > 0) {
-        src = song.downloadUrls[song.downloadUrls.length - 1].url;
       } else {
-        console.error('[AudioService] No playable URL found for song:', song);
-        throw new Error('No playable URL found');
+        // Use streaming proxy which handles redirection to CDN.
+        src = `/api/songs/stream?id=${song.id}`;
       }
 
       this.howl = new Howl({
         src: [src],
         html5: true, // Force HTML5 for streaming large files
-        format: ['mp3', 'm4a', 'mp4'],
+        format: ['m4a', 'mp4', 'mp3'],
         onplay: () => {
           this.emit('play', null);
           if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
