@@ -1,6 +1,7 @@
 import { Howl, Howler } from 'howler';
 import { SongDetail, SourceUrl } from '@/types';
 import { offlineAudioManager } from './offlineAudioManager';
+import { SaavnAPI } from './api';
 
 type AudioEvent = 'play' | 'pause' | 'end' | 'error' | 'stop' | 'load' | 'loading' | 'progress' | 'next' | 'prev';
 
@@ -49,8 +50,23 @@ export class AudioService {
       if (localUrl) {
         src = localUrl;
       } else {
-        // Use streaming proxy which handles redirection to CDN.
-        src = `/api/songs/stream?id=${song.id}`;
+        // Use direct CDN URLs from the song object to save Vercel bandwidth
+        let urls = song.downloadUrl || song.downloadUrls;
+        
+        // If URLs are missing, fetch details on the client to avoid Vercel proxy costs
+        if (!urls || urls.length === 0) {
+          const details = await SaavnAPI.getSongDetails([song.id]);
+          if (this.pendingSongId !== song.id) return; // Skip if song changed during fetch
+          urls = details[0]?.downloadUrl || details[0]?.downloadUrls;
+        }
+
+        if (urls && urls.length > 0) {
+          src = urls[urls.length - 1].url; 
+        } else {
+          console.error('[AudioService] No audio source found for:', song.id);
+          this.emit('error', new Error('No audio source found'));
+          return;
+        }
       }
 
       this.howl = new Howl({
